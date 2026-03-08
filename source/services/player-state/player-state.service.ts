@@ -115,14 +115,20 @@ export async function loadPlayerState(): Promise<PersistedPlayerState | null> {
 			return null;
 		}
 
+		// Merge with default state to ensure no missing properties (e.g. volume or autoplay)
+		const mergedState = {
+			...defaultState,
+			...state,
+		};
+
 		logger.info('PlayerStateService', 'Loaded player state', {
-			hasTrack: !!state.currentTrack,
-			queueLength: state.queue?.length ?? 0,
-			progress: state.progress,
-			lastUpdated: state.lastUpdated,
+			hasTrack: !!mergedState.currentTrack,
+			queueLength: mergedState.queue?.length ?? 0,
+			progress: mergedState.progress,
+			lastUpdated: mergedState.lastUpdated,
 		});
 
-		return state;
+		return mergedState;
 	} catch (error) {
 		logger.error('PlayerStateService', 'Failed to load player state', {
 			error: error instanceof Error ? error.message : String(error),

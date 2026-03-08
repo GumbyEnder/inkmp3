@@ -31,7 +31,7 @@ const cli = meow(
 	`
 	youtube-music-cli@${APP_VERSION}
 
-	Usage
+	🎵 Usage
 	  $ youtube-music-cli
 	  $ youtube-music-cli play <track-id|youtube-url>
 	  $ youtube-music-cli search <query>
@@ -42,7 +42,7 @@ const cli = meow(
 	  $ youtube-music-cli skip
 	  $ youtube-music-cli back
 
-	Plugin Commands
+	🔌 Plugin Commands
 	  $ youtube-music-cli plugins list
 	  $ youtube-music-cli plugins install <name|url>
 	  $ youtube-music-cli plugins remove <name>
@@ -50,12 +50,12 @@ const cli = meow(
 	  $ youtube-music-cli plugins enable <name>
 	  $ youtube-music-cli plugins disable <name>
 
-	Import Commands
+	📥 Import Commands
 	  $ youtube-music-cli import spotify <url-or-id>
 	  $ youtube-music-cli import youtube <url-or-id>
 
-	Options
-	  --theme, -t          Theme to use (dark, light, midnight, matrix)
+	⚙️  Options
+	  --theme, -t          Theme to use (dark, light, midnight, matrix, etc.)
 	  --volume, -v         Initial volume (0-100)
 	  --shuffle, -s        Enable shuffle mode
 	  --repeat, -r         Repeat mode (off, all, one)
@@ -68,13 +68,13 @@ const cli = meow(
 	  --name               Custom name for imported playlist
 	  --help, -h           Show this help
 
-	Shell Completions
+	🐚 Shell Completions
 	  $ youtube-music-cli completions bash
 	  $ youtube-music-cli completions zsh
 	  $ youtube-music-cli completions powershell
 	  $ youtube-music-cli completions fish
 
-	Examples
+	💡 Examples
 	  $ youtube-music-cli
 	  $ youtube-music-cli play dQw4w9WgXcQ
 	  $ youtube-music-cli search "Rick Astley"
@@ -483,7 +483,7 @@ if (command === 'plugins') {
 				process.exit(1);
 			}
 		})();
-	} else if (cli.flags.web || cli.flags['webOnly']) {
+	} else if (flags.web || flags.webOnly) {
 		// Handle web server flags
 		void (async () => {
 			const webManager = getWebServerManager();
@@ -501,10 +501,10 @@ if (command === 'plugins') {
 
 				await webManager.start({
 					enabled: true,
-					host: cli.flags['webHost'] ?? 'localhost',
-					port: cli.flags['webPort'] ?? 8080,
-					webOnly: cli.flags['webOnly'],
-					auth: cli.flags['webAuth'],
+					host: flags.webHost ?? 'localhost',
+					port: flags.webPort ?? 8080,
+					webOnly: flags.webOnly,
+					auth: flags.webAuth,
 				});
 
 				const serverUrl = webManager.getServerUrl();
@@ -518,7 +518,7 @@ if (command === 'plugins') {
 				});
 
 				// If web-only mode, just keep the server running
-				if (cli.flags['webOnly']) {
+				if (flags.webOnly) {
 					console.log('Running in web-only mode. Press Ctrl+C to exit.');
 					// Keep process alive
 					process.on('SIGINT', () => {
@@ -549,7 +549,7 @@ if (command === 'plugins') {
 			}
 
 			// Check for updates before rendering the app (skip in web-only mode)
-			if (!cli.flags['webOnly']) {
+			if (!flags.webOnly) {
 				const versionCheck = getVersionCheckService();
 				const config = getConfigService();
 				const lastCheck = config.getLastVersionCheck();

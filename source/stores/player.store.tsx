@@ -265,14 +265,11 @@ export function playerReducer(
 				hasTrack: !!action.currentTrack,
 				queueLength: action.queue.length,
 			});
-			playerService.setVolume(action.volume);
 			return {
 				...state,
 				currentTrack: action.currentTrack,
 				queue: action.queue,
 				queuePosition: action.queuePosition,
-				progress: action.progress,
-				volume: action.volume,
 				shuffle: action.shuffle,
 				repeat: action.repeat,
 				autoplay: action.autoplay ?? true,
@@ -646,11 +643,6 @@ function PlayerManager() {
 			return;
 		}
 
-		if (state.progress < state.duration) {
-			autoAdvanceRef.current = false;
-			return;
-		}
-
 		if (state.repeat === 'one') {
 			dispatch({category: 'SEEK', position: 0});
 			return;
@@ -727,6 +719,19 @@ function PlayerManager() {
 					count: suggestions.length,
 					basedOn: trackTitle,
 				});
+
+				// If the player is waiting for an autoplay track because the queue ended, trigger NEXT now that tracks are added
+				if (
+					state.queuePosition >= state.queue.length - 1 &&
+					state.progress >= state.duration - 2 &&
+					!state.isPlaying
+				) {
+					logger.info(
+						'PlayerManager',
+						'Autoplay: resuming playback via freshly added suggestions',
+					);
+					dispatch({category: 'NEXT'});
+				}
 			})
 			.catch((error: unknown) => {
 				isFetchingAutoplayRef.current = false;
@@ -748,6 +753,8 @@ function PlayerManager() {
 		state.queuePosition,
 		musicService,
 		dispatch,
+		state.progress,
+		state.duration,
 	]);
 
 	return null;
@@ -778,14 +785,14 @@ export function PlayerProvider({children}: {children: ReactNode}) {
 					queue: persistedState.queue,
 					queuePosition: persistedState.queuePosition,
 					progress: persistedState.progress,
-					volume: persistedState.volume,
+					volume: state.volume, // Keep initial volume from config
 					shuffle: persistedState.shuffle,
 					repeat: persistedState.repeat,
 					autoplay: persistedState.autoplay ?? true,
 				});
 			}
 		});
-	}, []);
+	}, [state.volume]);
 
 	// Save state on changes (debounced for progress updates)
 	useEffect(() => {

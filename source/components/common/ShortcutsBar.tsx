@@ -121,21 +121,16 @@ export default function ShortcutsBar() {
 				<Text color={shortcutColor('playPause')}>
 					{playerState.isPlaying ? ICONS.PAUSE : ICONS.PLAY_PAUSE_ON} [Space]
 				</Text>{' '}
-				| <Text color={shortcutColor('prev')}>{ICONS.PREV} [B/←]</Text> |{' '}
-				<Text color={shortcutColor('next')}>{ICONS.NEXT} [N/→]</Text> |{' '}
-				<Text color={shuffleColor}>{ICONS.SHUFFLE} [Shift+S]</Text> |{' '}
+				• <Text color={shortcutColor('prev')}>{ICONS.PREV} [B]</Text> •{' '}
+				<Text color={shortcutColor('next')}>{ICONS.NEXT} [N]</Text> •{' '}
+				<Text color={shuffleColor}>{ICONS.SHUFFLE} [Sft+S]</Text> •{' '}
 				<Text color={repeatColor}>
 					{playerState.repeat === 'one' ? ICONS.REPEAT_ONE : ICONS.REPEAT_ALL}{' '}
 					[R]
 				</Text>{' '}
-				| <Text color={autoplayColor}>{ICONS.AUTOPLAY} [Shift+A]</Text> |{' '}
-				<Text color={theme.colors.text}>{ICONS.PLAYLIST} [Shift+P]</Text> |{' '}
-				<Text color={theme.colors.text}>{ICONS.DOWNLOAD} [Shift+D]</Text> |{' '}
-				<Text color={theme.colors.text}>{ICONS.SEARCH} [/]</Text> |{' '}
-				<Text color={theme.colors.text}>{ICONS.HELP} [?]</Text> |{' '}
-				<Text color={theme.colors.text}>{ICONS.BG_PLAY} [Shift+Q]</Text> |{' '}
-				<Text color={theme.colors.text}>{ICONS.RESUME} [Shift+R]</Text> |{' '}
-				<Text color={theme.colors.text}>{ICONS.QUIT} [Q]</Text>
+				• <Text color={autoplayColor}>{ICONS.AUTOPLAY} [Sft+A]</Text> •{' '}
+				<Text color={theme.colors.text}>{ICONS.SEARCH} [/]</Text> •{' '}
+				<Text color={theme.colors.text}>{ICONS.HELP} [?]</Text>
 			</Text>
 
 			{/* Right: Playback mode + volume indicator */}
