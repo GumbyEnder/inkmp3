@@ -24,6 +24,11 @@ jobs:
         run: bun run build
       - name: Compile
         run: bun run compile
+      - name: Compile Windows
+        run: bun build source/cli.tsx --compile --target=bun-windows-x64 --outfile dist/youtube-music-cli.exe
+      - name: Extract Latest Changelog
+        run: |
+          awk '/^#+ \[?[0-9]/ { if (p) exit; p=1 } p' CHANGELOG.md > latest-release.md
       - uses: JS-DevTools/npm-publish@v4
         with:
           token: ${{ secrets.NPM_TOKEN }}
@@ -32,5 +37,7 @@ jobs:
         uses: softprops/action-gh-release@v2
         if: github.ref_type == 'tag'
         with:
-          files: dist/youtube-music-cli.exe
-          body_path: ${{ github.workspace }}/CHANGELOG.md
+          files: |
+            dist/youtube-music-cli
+            dist/youtube-music-cli.exe
+          body_path: latest-release.md

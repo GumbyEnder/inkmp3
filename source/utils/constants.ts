@@ -63,6 +63,8 @@ export const VIEW = {
 	IMPORT: 'import',
 	EXPORT_PLAYLISTS: 'export_playlists',
 	HISTORY: 'history',
+	GENRES: 'genres',
+	NEW_RELEASES: 'new_releases',
 } as const;
 
 // Search types
@@ -106,6 +108,10 @@ export const KEYBINDINGS = {
 	SEEK_BACKWARD: ['shift+left'],
 	SPEED_UP: ['>'],
 	SPEED_DOWN: ['<'],
+
+	// New Views Shortcuts (Optional, we'll map them later if needed)
+	GENRES: ['shift+m'],
+	NEW_RELEASES: ['shift+n'],
 
 	// Navigation
 	UP: ['up', 'k'],

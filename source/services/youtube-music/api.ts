@@ -4,6 +4,8 @@ import type {
 	Album,
 	Artist,
 	Playlist,
+	Genre,
+	Release,
 	SearchOptions,
 	SearchResponse,
 	SearchResult,
@@ -637,6 +639,233 @@ class MusicService {
 		} catch (error) {
 			const message = error instanceof Error ? error.message : String(error);
 			logger.warn('MusicService', 'getSuggestions failed', {error: message});
+			return [];
+		}
+	}
+
+	async getGenres(): Promise<Array<{title: string; genres: Genre[]}>> {
+		try {
+			const yt = await getClient();
+			// eslint-disable-next-line @typescript-eslint/no-explicit-any
+			const response: any = await yt.actions.execute('/browse', {
+				browseId: 'FEmusic_moods_and_genres',
+				client: 'YTMUSIC',
+			});
+
+			const result: Array<{title: string; genres: Genre[]}> = [];
+
+			const tabs =
+				response.data?.contents?.singleColumnBrowseResultsRenderer?.tabs;
+			if (!tabs) return result;
+
+			const contents =
+				tabs[0]?.tabRenderer?.content?.sectionListRenderer?.contents ?? [];
+
+			for (const section of contents) {
+				const header =
+					section.gridRenderer?.header?.gridHeaderRenderer?.title?.runs?.[0]
+						?.text || 'Genres';
+				const items = section.gridRenderer?.items || [];
+
+				const genres: Genre[] = [];
+				for (const item of items) {
+					const btn = item.musicNavigationButtonRenderer;
+					if (!btn) continue;
+
+					const title = btn.buttonText?.runs?.[0]?.text;
+					const browseId = btn.clickCommand?.browseEndpoint?.browseId;
+					const params = btn.clickCommand?.browseEndpoint?.params;
+
+					if (title && browseId) {
+						genres.push({title, browseId, params});
+					}
+				}
+
+				if (genres.length > 0) {
+					result.push({title: header, genres});
+				}
+			}
+
+			return result;
+		} catch (error) {
+			logger.error('MusicService', 'getGenres failed', {
+				error: error instanceof Error ? error.message : String(error),
+			});
+			return [];
+		}
+	}
+
+	async getNewReleases(): Promise<Array<{title: string; releases: Release[]}>> {
+		try {
+			const yt = await getClient();
+			// eslint-disable-next-line @typescript-eslint/no-explicit-any
+			const response: any = await yt.actions.execute('/browse', {
+				browseId: 'FEmusic_new_releases',
+				client: 'YTMUSIC',
+			});
+
+			const result: Array<{title: string; releases: Release[]}> = [];
+
+			const tabs =
+				response.data?.contents?.singleColumnBrowseResultsRenderer?.tabs;
+			if (!tabs) return result;
+
+			const contents =
+				tabs[0]?.tabRenderer?.content?.sectionListRenderer?.contents ?? [];
+
+			for (const section of contents) {
+				const header =
+					section.musicCarouselShelfRenderer?.header
+						?.musicCarouselShelfBasicHeaderRenderer?.title?.runs?.[0]?.text ||
+					'New Releases';
+				const items =
+					section.musicCarouselShelfRenderer?.contents ||
+					section.musicShelfRenderer?.contents ||
+					section.gridRenderer?.items ||
+					[];
+
+				const releases: Release[] = [];
+				for (const item of items) {
+					const renderer = item.musicTwoRowItemRenderer;
+					if (!renderer) continue;
+
+					const titleRuns = renderer.title?.runs || [];
+					const subtitleRuns = renderer.subtitle?.runs || [];
+
+					// eslint-disable-next-line @typescript-eslint/no-explicit-any
+					const title = titleRuns.map((r: any) => r.text).join('');
+					const browseId =
+						renderer.navigationEndpoint?.browseEndpoint?.browseId;
+
+					const artist =
+						subtitleRuns
+							.filter(
+								// eslint-disable-next-line @typescript-eslint/no-explicit-any
+								(r: any) => r.navigationEndpoint?.browseEndpoint?.browseId,
+							)
+							// eslint-disable-next-line @typescript-eslint/no-explicit-any
+							.map((r: any) => r.text)
+							.join(', ') ||
+						// eslint-disable-next-line @typescript-eslint/no-explicit-any
+						subtitleRuns.map((r: any) => r.text).join('') ||
+						'Unknown Artist';
+					// eslint-disable-next-line @typescript-eslint/no-explicit-any
+					const subtitleText = subtitleRuns.map((r: any) => r.text).join('');
+
+					if (title && browseId) {
+						releases.push({title, browseId, artist, subtitle: subtitleText});
+					}
+				}
+
+				if (releases.length > 0) {
+					result.push({title: header, releases});
+				}
+			}
+
+			return result;
+		} catch (error) {
+			logger.error('MusicService', 'getNewReleases failed', {
+				error: error instanceof Error ? error.message : String(error),
+			});
+			return [];
+		}
+	}
+
+	async getGenrePlaylists(
+		browseId: string,
+		params?: string,
+	): Promise<Release[]> {
+		try {
+			const yt = await getClient();
+			// eslint-disable-next-line @typescript-eslint/no-explicit-any
+			const payload: any = {browseId, client: 'YTMUSIC'};
+			if (params) payload.params = params;
+
+			// eslint-disable-next-line @typescript-eslint/no-explicit-any
+			const response = (await yt.actions.execute('/browse', payload)) as any;
+			const releases: Release[] = [];
+
+			const contents =
+				response.data?.contents?.singleColumnBrowseResultsRenderer?.tabs?.[0]
+					?.tabRenderer?.content?.sectionListRenderer?.contents ?? [];
+
+			for (const section of contents) {
+				const items =
+					section.musicCarouselShelfRenderer?.contents ||
+					section.musicShelfRenderer?.contents ||
+					section.gridRenderer?.items ||
+					[];
+
+				for (const item of items) {
+					const renderer = item.musicTwoRowItemRenderer;
+					if (!renderer) continue;
+
+					const titleRuns = renderer.title?.runs || [];
+					const subtitleRuns = renderer.subtitle?.runs || [];
+
+					// eslint-disable-next-line @typescript-eslint/no-explicit-any
+					const title = titleRuns.map((r: any) => r.text).join('');
+					const itemBrowseId =
+						renderer.navigationEndpoint?.browseEndpoint?.browseId;
+
+					// eslint-disable-next-line @typescript-eslint/no-explicit-any
+					const subtitleText = subtitleRuns.map((r: any) => r.text).join('');
+
+					if (title && itemBrowseId) {
+						releases.push({
+							title,
+							browseId: itemBrowseId,
+							artist: subtitleText,
+							subtitle: subtitleText,
+						});
+					}
+				}
+			}
+
+			return releases;
+		} catch (error) {
+			logger.error('MusicService', 'getGenrePlaylists failed', {
+				error: error instanceof Error ? error.message : String(error),
+			});
+			return [];
+		}
+	}
+
+	async getReleaseTracks(browseId: string): Promise<Track[]> {
+		try {
+			const yt = await getClient();
+			// eslint-disable-next-line @typescript-eslint/no-explicit-any
+			let items: any[] = [];
+
+			if (browseId.startsWith('MPREb')) {
+				const album = await yt.music.getAlbum(browseId);
+				items = album.contents || [];
+			} else {
+				const playlistId = browseId.replace(/^VL/, '');
+				const playlist = await yt.music.getPlaylist(playlistId);
+				items = playlist.items || [];
+			}
+
+			return (
+				items
+					// eslint-disable-next-line @typescript-eslint/no-explicit-any
+					.map((item: any) => ({
+						videoId: item.video_id || item.id,
+						title: item.title || 'Unknown Title',
+						artists:
+							// eslint-disable-next-line @typescript-eslint/no-explicit-any
+							item.artists?.map((a: any) => ({
+								name: a.name,
+								artistId: a.channel_id,
+							})) || [],
+					}))
+					// eslint-disable-next-line @typescript-eslint/no-explicit-any
+					.filter((t: any) => t.videoId)
+			);
+		} catch (error) {
+			logger.error('MusicService', 'getReleaseTracks failed', {
+				error: error instanceof Error ? error.message : String(error),
+			});
 			return [];
 		}
 	}

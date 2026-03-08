@@ -22,6 +22,8 @@ import ExploreLayout from './ExploreLayout.tsx';
 import HistoryLayout from './HistoryLayout.tsx';
 import ImportLayout from '../import/ImportLayout.tsx';
 import ExportLayout from '../export/ExportLayout.tsx';
+import NewReleasesLayout from './NewReleasesLayout.tsx';
+import GenresLayout from './GenresLayout.tsx';
 import {KEYBINDINGS, VIEW} from '../../utils/constants.ts';
 import {Box} from 'ink';
 import {useTerminalSize} from '../../hooks/useTerminalSize.ts';
@@ -107,6 +109,14 @@ function MainLayout() {
 		}
 	}, [dispatch, navState.currentView]);
 
+	const goToNewReleases = useCallback(() => {
+		dispatch({category: 'NAVIGATE', view: VIEW.NEW_RELEASES});
+	}, [dispatch]);
+
+	const goToGenres = useCallback(() => {
+		dispatch({category: 'NAVIGATE', view: VIEW.GENRES});
+	}, [dispatch]);
+
 	const handleDetach = useCallback(() => {
 		// Detach mode: Exit CLI while keeping music playing
 		const player = getPlayerService();
@@ -161,6 +171,8 @@ function MainLayout() {
 	useKeyBinding(['T'], goToTrending);
 	useKeyBinding(['e'], goToExplore);
 	useKeyBinding(['i'], goToImport);
+	useKeyBinding(KEYBINDINGS.NEW_RELEASES, goToNewReleases);
+	useKeyBinding(KEYBINDINGS.GENRES, goToGenres);
 	useKeyBinding(KEYBINDINGS.DETACH, handleDetach);
 	useKeyBinding(KEYBINDINGS.RESUME_BACKGROUND, handleResumeBackground);
 
@@ -218,6 +230,12 @@ function MainLayout() {
 
 			case 'explore':
 				return <ExploreLayout key="explore" />;
+
+			case 'new_releases':
+				return <NewReleasesLayout key="new_releases" />;
+
+			case 'genres':
+				return <GenresLayout key="genres" />;
 
 			case 'import':
 				return <ImportLayout key="import" />;

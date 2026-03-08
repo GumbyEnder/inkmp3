@@ -24,6 +24,19 @@ export interface Playlist {
 	tracks: Track[];
 }
 
+export interface Genre {
+	title: string;
+	browseId: string;
+	params?: string;
+}
+
+export interface Release {
+	title: string;
+	browseId: string;
+	artist: string;
+	subtitle?: string;
+}
+
 export interface SearchResult {
 	type: 'song' | 'album' | 'artist' | 'playlist';
 	data: Track | Album | Artist | Playlist;

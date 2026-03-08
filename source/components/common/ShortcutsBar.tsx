@@ -129,6 +129,8 @@ export default function ShortcutsBar() {
 					[R]
 				</Text>{' '}
 				• <Text color={autoplayColor}>{ICONS.AUTOPLAY} [Sft+A]</Text> •{' '}
+				<Text color={theme.colors.text}>Releases [Sft+N]</Text> •{' '}
+				<Text color={theme.colors.text}>Genres [Sft+M]</Text> •{' '}
 				<Text color={theme.colors.text}>{ICONS.SEARCH} [/]</Text> •{' '}
 				<Text color={theme.colors.text}>{ICONS.HELP} [?]</Text>
 			</Text>
