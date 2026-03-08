@@ -1,4 +1,8 @@
-## [0.0.51](https://github.com/involvex/youtube-music-cli/compare/v0.0.50...v0.0.51) (2026-03-08)
+## [0.0.52](https://github.com/involvex/youtube-music-cli/compare/v0.0.50...v0.0.52) (2026-03-08)
+
+### Features
+
+- **ui:** Add AB Loop feature and keyboard bindings ([fd55b59](https://github.com/involvex/youtube-music-cli/commit/fd55b59bbd9394218ac53cfe2c7c4864621f5fa0))
 
 ## [0.0.50](https://github.com/involvex/youtube-music-cli/compare/v0.0.49...v0.0.50) (2026-03-08)
 
