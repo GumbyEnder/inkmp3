@@ -478,45 +478,78 @@ class MusicService {
 	async getTrending(): Promise<Track[]> {
 		try {
 			const yt = await getClient();
-			const trending = (await yt.getTrending()) as unknown as {
+			const explore = (await yt.music.getExplore()) as unknown as {
 				sections?: Array<{
-					items?: Array<{
+					header?: {title?: {toString(): string} | string};
+					contents?: Array<{
+						type?: string;
 						id?: string;
 						video_id?: string;
-						title?: string | {text?: string};
+						title?: string | {text?: string} | {toString(): string};
+						subtitle?: {toString(): string};
 						author?: string | {name?: string};
 						duration?: number | {seconds?: number};
+						artists?: Array<{name?: string; channel_id?: string; id?: string}>;
+						authors?: Array<{name?: string; channel_id?: string; id?: string}>;
 					}>;
 				}>;
 			};
 
+			const trendingSection = explore.sections?.find(section => {
+				const title = section.header?.title?.toString() || '';
+				return title.toLowerCase().includes('trending');
+			});
+
+			if (!trendingSection || !trendingSection.contents) {
+				return [];
+			}
+
 			const tracks: Track[] = [];
-			const sections = trending.sections ?? [];
-			for (const section of sections) {
-				for (const item of section.items ?? []) {
-					const videoId = item.id || item.video_id;
-					if (!videoId) continue;
-					tracks.push({
-						videoId,
-						title:
-							(typeof item.title === 'string'
-								? item.title
-								: item.title?.text) ?? 'Unknown',
-						artists: [
-							{
-								artistId: '',
-								name:
-									(typeof item.author === 'string'
-										? item.author
-										: item.author?.name) ?? 'Unknown',
-							},
-						],
-						duration:
-							(typeof item.duration === 'number'
-								? item.duration
-								: item.duration?.seconds) ?? 0,
-					});
+			for (const item of trendingSection.contents) {
+				const videoId = item.id || item.video_id;
+				if (!videoId) continue;
+
+				// Parse artists/authors
+				const artistsData = item.artists || item.authors || [];
+				const artists =
+					artistsData.length > 0
+						? artistsData.map(a => ({
+								artistId: a.channel_id || a.id || '',
+								name: a.name || 'Unknown',
+							}))
+						: [
+								{
+									artistId: '',
+									name: 'Unknown Artist',
+								},
+							];
+
+				// Try to extract artist from subtitle/author if artists array is empty
+				if (artists[0]?.name === 'Unknown Artist') {
+					const subtitle = item.subtitle?.toString();
+					if (subtitle) {
+						// Subtitle format often "Artist • Album • Views • Duration"
+						const parts = subtitle.split(' • ');
+						if (parts.length > 0) {
+							artists[0]!.name = parts[0]!;
+						}
+					} else if (item.author) {
+						artists[0]!.name =
+							(typeof item.author === 'string'
+								? item.author
+								: item.author?.name) || 'Unknown Artist';
+					}
 				}
+
+				tracks.push({
+					videoId,
+					title: item.title?.toString() ?? 'Unknown',
+					artists,
+					duration:
+						typeof item.duration === 'number'
+							? item.duration
+							: (item.duration?.seconds ?? 0),
+				});
 			}
 
 			return tracks.slice(0, 25);
