@@ -79,6 +79,8 @@ class PluginLoaderService {
 		try {
 			// Use jiti to load TypeScript/JavaScript module
 			pluginModule = await this.jiti.import(pluginEntryPath);
+			// Clear perf entries accumulated by jiti/esbuild transforms
+			performance.clearMeasures();
 		} catch (error) {
 			logger.error(
 				'PluginLoaderService',
@@ -88,6 +90,18 @@ class PluginLoaderService {
 			throw new Error(
 				`Failed to load plugin from ${pluginEntryPath}: ${error instanceof Error ? error.message : String(error)}`,
 			);
+		}
+
+		// Unwrap ESM namespace object that jiti may return when a module has named exports
+		if (
+			pluginModule !== null &&
+			typeof pluginModule === 'object' &&
+			'default' in (pluginModule as Record<string, unknown>)
+		) {
+			const maybeDefault = (pluginModule as Record<string, unknown>)['default'];
+			if (this.isValidPlugin(maybeDefault)) {
+				pluginModule = maybeDefault;
+			}
 		}
 
 		// Validate plugin module

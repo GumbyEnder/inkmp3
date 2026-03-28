@@ -32,7 +32,14 @@ class Logger {
 		data?: unknown,
 	) {
 		const timestamp = new Date().toISOString();
-		const dataStr = data ? `\n${JSON.stringify(data, null, 2)}` : '';
+		let dataStr = '';
+		if (data !== undefined) {
+			dataStr =
+				data instanceof Error
+					? `\n${data.stack ?? data.message}`
+					: `\n${JSON.stringify(data, null, 2)}`;
+		}
+
 		const logLine = `[${timestamp}] [${level}] [${category}] ${message}${dataStr}\n`;
 
 		fs.appendFileSync(DEBUG_FILE, logLine);
@@ -56,8 +63,13 @@ class Logger {
 
 	error(category: string, message: string, data?: unknown) {
 		this.writeToFile('ERROR', category, message, data);
-		// Keep console.error for critical errors, but this should be rare
-		console.error(`[${category}] ${message}`);
+		const extra =
+			data instanceof Error
+				? `: ${data.message}`
+				: data !== undefined
+					? `: ${String(data)}`
+					: '';
+		console.error(`[${category}] ${message}${extra}`);
 	}
 
 	getLogPath(): string {

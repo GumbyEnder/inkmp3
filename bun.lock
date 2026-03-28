@@ -17,6 +17,7 @@
         "node-notifier": "^10.0.1",
         "node-youtube-music": "^0.10.3",
         "play-sound": "^1.1.6",
+        "punycode": "^2.3.1",
         "react": "^19.2.4",
         "ws": "^8.19.0",
         "youtube-ext": "^1.1.25",
@@ -49,6 +50,10 @@
         "typescript-eslint": "^8.57.1",
       },
     },
+  },
+  "patchedDependencies": {
+    "tr46@0.0.3": "patches/tr46@0.0.3.patch",
+    "whatwg-url@5.0.0": "patches/whatwg-url@5.0.0.patch",
   },
   "overrides": {
     "minimatch": "^10.2.1",

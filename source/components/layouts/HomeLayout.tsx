@@ -11,6 +11,8 @@ import {useKeyBinding} from '../../hooks/useKeyboard.ts';
 import {truncate, formatTime} from '../../utils/format.ts';
 import {useTerminalSize} from '../../hooks/useTerminalSize.ts';
 import {ICONS} from '../../utils/icons.ts';
+import {getMusicService} from '../../services/youtube-music/api.ts';
+import {type Track} from '../../types/youtube-music.types.ts';
 
 export default function HomeLayout() {
 	const {theme} = useTheme();
@@ -22,14 +24,52 @@ export default function HomeLayout() {
 
 	const [selectedIndex, setSelectedIndex] = useState(0);
 
+	const RANDOM_QUERIES = [
+		'top hits 2024',
+		'popular songs',
+		'trending music',
+		'chill vibes',
+		'rock classics',
+		'indie hits',
+		'hip hop bangers',
+		'electronic dance',
+		'acoustic favorites',
+		'feel good music',
+		'jazz essentials',
+		'r&b hits',
+		'summer songs',
+	];
+
+	const handlePlayRandom = () => {
+		const query =
+			RANDOM_QUERIES[Math.floor(Math.random() * RANDOM_QUERIES.length)]!;
+		getMusicService()
+			.search(query, {type: 'songs', limit: 10})
+			.then(response => {
+				const tracks = response.results
+					.filter(r => r.type === 'song')
+					.map(r => r.data as Track);
+				if (tracks.length > 0) {
+					const track = tracks[Math.floor(Math.random() * tracks.length)]!;
+					play(track, {clearQueue: true});
+				}
+			})
+			.catch(() => {});
+	};
+
+	type QuickLink =
+		| {label: string; view: (typeof VIEW)[keyof typeof VIEW]; action?: never}
+		| {label: string; view?: never; action: () => void};
+
 	// Quick links
-	const quickLinks = [
+	const quickLinks: QuickLink[] = [
 		{label: '🔍 Search', view: VIEW.SEARCH},
 		{label: '📜 Playlists', view: VIEW.PLAYLISTS},
 		{label: '🔥 Trending', view: VIEW.TRENDING},
 		{label: '🆕 New Releases', view: VIEW.NEW_RELEASES},
 		{label: '❤️ Favorites', view: VIEW.FAVORITES},
 		{label: '🕒 History', view: VIEW.HISTORY},
+		{label: '🎲 Play Random Song', action: handlePlayRandom},
 	];
 
 	const recentHistory = history.slice(0, 5);
@@ -40,7 +80,12 @@ export default function HomeLayout() {
 
 	const handleSelect = () => {
 		if (selectedIndex < quickLinks.length) {
-			dispatch({category: 'NAVIGATE', view: quickLinks[selectedIndex]!.view});
+			const link = quickLinks[selectedIndex]!;
+			if (link.action) {
+				link.action();
+			} else {
+				dispatch({category: 'NAVIGATE', view: link.view});
+			}
 		} else if (selectedIndex < quickLinks.length + recentHistory.length) {
 			const entry = recentHistory[selectedIndex - quickLinks.length];
 			if (entry) play(entry.track, {clearQueue: true});
@@ -107,7 +152,7 @@ export default function HomeLayout() {
 						</Text>
 					</Box>
 					{quickLinks.map((link, index) => (
-						<Box key={link.view}>
+						<Box key={link.label}>
 							<Text
 								backgroundColor={
 									selectedIndex === index ? theme.colors.primary : undefined
