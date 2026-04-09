@@ -18,7 +18,7 @@ export default function HomeLayout() {
 	const {theme} = useTheme();
 	const {dispatch} = useNavigation();
 	const {history} = useHistory();
-	const {favorites} = useFavorites();
+	const {favorites, toggleFavorite} = useFavorites();
 	const {state: playerState, play} = usePlayer();
 	const {columns} = useTerminalSize();
 
@@ -110,6 +110,12 @@ export default function HomeLayout() {
 	useKeyBinding(KEYBINDINGS.SEARCH, () =>
 		dispatch({category: 'NAVIGATE', view: VIEW.SEARCH}),
 	);
+
+	useKeyBinding(KEYBINDINGS.TOGGLE_FAVORITE, () => {
+		if (playerState.currentTrack) {
+			toggleFavorite(playerState.currentTrack);
+		}
+	});
 
 	const maxTitleLength = Math.max(20, columns - 40);
 
@@ -311,7 +317,7 @@ export default function HomeLayout() {
 				</Box>
 				<Box>
 					<Text color={theme.colors.dim}>
-						Shift+F: Favorites • Shift+H: History • ,: Settings
+						f: Favorites • Shift+H: History • ,: Settings
 					</Text>
 				</Box>
 			</Box>
