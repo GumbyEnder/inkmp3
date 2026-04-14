@@ -630,8 +630,18 @@ function PlayerManager() {
 			// Resume only if the same track is already loaded in the player service.
 			// If the track changed, the "handle track changes" effect will call play().
 			const currentTrackId = playerService.getCurrentTrackId?.() ?? '';
-			if (currentTrackId && state.currentTrack?.videoId === currentTrackId) {
+			logger.debug('PlayerManager', 'Play/pause effect', {
+				isPlaying: state.isPlaying,
+				currentTrackId,
+				stateVideoId: state.currentTrack?.videoId,
+			});
+			if (!currentTrackId || state.currentTrack?.videoId === currentTrackId) {
 				playerService.resume();
+			} else {
+				logger.debug('PlayerManager', 'Skipping resume', {
+					currentTrackId,
+					stateVideoId: state.currentTrack?.videoId,
+				});
 			}
 		} else {
 			playerService.pause();

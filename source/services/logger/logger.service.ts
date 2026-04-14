@@ -63,12 +63,16 @@ class Logger {
 
 	error(category: string, message: string, data?: unknown) {
 		this.writeToFile('ERROR', category, message, data);
-		const extra =
-			data instanceof Error
-				? `: ${data.message}`
-				: data !== undefined
-					? `: ${String(data)}`
-					: '';
+		let extra = '';
+		if (data !== undefined) {
+			if (data instanceof Error) {
+				extra = `: ${data.message}`;
+			} else if (typeof data === 'object' && data !== null) {
+				extra = `: ${JSON.stringify(data)}`;
+			} else {
+				extra = `: ${String(data)}`;
+			}
+		}
 		console.error(`[${category}] ${message}${extra}`);
 	}
 

@@ -17,7 +17,18 @@ const defaultHistory: PersistedHistory = {
 	lastUpdated: new Date().toISOString(),
 };
 
+let saveLock = Promise.resolve();
+
 export async function saveHistory(entries: HistoryEntry[]): Promise<void> {
+	const currentLock = saveLock;
+	let releaseLock: () => void = () => {};
+	const newLock = new Promise<void>(resolve => {
+		releaseLock = resolve;
+	});
+	saveLock = newLock;
+
+	await currentLock.catch(() => {});
+
 	try {
 		if (!existsSync(CONFIG_DIR)) {
 			await mkdir(CONFIG_DIR, {recursive: true});
@@ -29,7 +40,7 @@ export async function saveHistory(entries: HistoryEntry[]): Promise<void> {
 			lastUpdated: new Date().toISOString(),
 		};
 
-		const tempFile = `${HISTORY_FILE}.tmp`;
+		const tempFile = `${HISTORY_FILE}.tmp.${Date.now()}`;
 		await writeFile(tempFile, JSON.stringify(stateToSave, null, 2), 'utf8');
 
 		if (process.platform === 'win32' && existsSync(HISTORY_FILE)) {
@@ -47,6 +58,8 @@ export async function saveHistory(entries: HistoryEntry[]): Promise<void> {
 		logger.error('HistoryService', 'Failed to save listening history', {
 			error: error instanceof Error ? error.message : String(error),
 		});
+	} finally {
+		releaseLock();
 	}
 }
 

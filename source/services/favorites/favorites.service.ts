@@ -20,7 +20,18 @@ const defaultFavorites: PersistedFavorites = {
 	lastUpdated: new Date().toISOString(),
 };
 
+let saveLock = Promise.resolve();
+
 export async function saveFavorites(tracks: Track[]): Promise<void> {
+	const currentLock = saveLock;
+	let releaseLock: () => void = () => {};
+	const newLock = new Promise<void>(resolve => {
+		releaseLock = resolve;
+	});
+	saveLock = newLock;
+
+	await currentLock.catch(() => {});
+
 	try {
 		if (!existsSync(CONFIG_DIR)) {
 			await mkdir(CONFIG_DIR, {recursive: true});
@@ -32,7 +43,7 @@ export async function saveFavorites(tracks: Track[]): Promise<void> {
 			lastUpdated: new Date().toISOString(),
 		};
 
-		const tempFile = `${FAVORITES_FILE}.tmp`;
+		const tempFile = `${FAVORITES_FILE}.tmp.${Date.now()}`;
 		await writeFile(tempFile, JSON.stringify(stateToSave, null, 2), 'utf8');
 
 		if (process.platform === 'win32' && existsSync(FAVORITES_FILE)) {
@@ -50,6 +61,8 @@ export async function saveFavorites(tracks: Track[]): Promise<void> {
 		logger.error('FavoritesService', 'Failed to save favorites', {
 			error: error instanceof Error ? error.message : String(error),
 		});
+	} finally {
+		releaseLock();
 	}
 }
 

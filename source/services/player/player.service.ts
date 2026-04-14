@@ -529,7 +529,13 @@ class PlayerService {
 	}
 
 	resume(): void {
-		logger.debug('PlayerService', 'resume() called');
+		logger.debug('PlayerService', 'resume() called', {
+			isPlaying: this.isPlaying,
+			hasIpcSocket: Boolean(this.ipcSocket),
+			ipcDestroyed: this.ipcSocket?.destroyed ?? true,
+			hasMpvProcess: Boolean(this.mpvProcess),
+			currentTrackId: this.currentTrackId,
+		});
 		this.isPlaying = true;
 		if (this.ipcSocket && !this.ipcSocket.destroyed) {
 			this.sendIpcCommand(['set_property', 'pause', false]);
@@ -540,6 +546,7 @@ class PlayerService {
 				}, 100);
 			}
 		} else if (!this.isPlaying && !this.mpvProcess && this.currentUrl) {
+			logger.info('PlayerService', 'Resume fallback: restarting track');
 			void this.play(this.currentUrl, {volume: this.currentVolume});
 		}
 	}
