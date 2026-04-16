@@ -1,3 +1,12 @@
+## [0.0.69](https://github.com/involvex/youtube-music-cli/compare/v0.0.68...v0.0.69) (2026-04-16)
+
+### Features
+
+- Implement full subtitle display feature with config toggle & UI ([479ffb8](https://github.com/involvex/youtube-music-cli/commit/479ffb82bbeb9819bc40e08b4d6110aa8d59c40f))
+- Implement full subtitle display feature with config toggle & UI ([6e97b10](https://github.com/involvex/youtube-music-cli/commit/6e97b1040af8260704efe7a901b32611a4572c3a))
+- Initialize web frontend workspace and remove unused punycode dependency ([9f36f61](https://github.com/involvex/youtube-music-cli/commit/9f36f61404bb62b9038b5b7fe49e1ef533e37ea5))
+- Initialize web frontend workspace and remove unused punycode dependency ([48ebe58](https://github.com/involvex/youtube-music-cli/commit/48ebe580fb3e56a062939cc7877f9c0a736d5d86))
+
 ## [0.0.68](https://github.com/involvex/youtube-music-cli/compare/v0.0.66...v0.0.68) (2026-04-16)
 
 ## [0.0.66](https://github.com/involvex/youtube-music-cli/compare/v0.0.65...v0.0.66) (2026-04-14)
