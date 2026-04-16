@@ -191,11 +191,20 @@ async function runDirectPlaybackCommand(flags: Flags): Promise<void> {
 		volumeFadeDuration: config.get('volumeFadeDuration'),
 	};
 
+	const isDirectAudioUrl = (url: string): boolean => {
+		return url.startsWith('http') && /\.(mp3|wav|m4a|ogg|flac|aac)$/i.test(url);
+	};
+
 	let track: Track | null | undefined;
+	let directUrl: string | undefined;
 	if (flags.playTrack) {
-		track = await musicService.getTrack(flags.playTrack);
-		if (!track) {
-			throw new Error(`Track not found: ${flags.playTrack}`);
+		if (isDirectAudioUrl(flags.playTrack)) {
+			directUrl = flags.playTrack;
+		} else {
+			track = await musicService.getTrack(flags.playTrack);
+			if (!track) {
+				throw new Error(`Track not found: ${flags.playTrack}`);
+			}
 		}
 	} else if (flags.searchQuery) {
 		const response = await musicService.search(flags.searchQuery, {
@@ -218,17 +227,22 @@ async function runDirectPlaybackCommand(flags: Flags): Promise<void> {
 		}
 	}
 
-	if (!track) {
+	if (!track && !directUrl) {
 		throw new Error('No track resolved for playback command.');
 	}
 
-	const artists =
-		track.artists.length > 0
-			? track.artists.map(artist => artist.name).join(', ')
-			: 'Unknown Artist';
-	console.log(`Playing: ${track.title} — ${artists}`);
-	const youtubeUrl = `https://www.youtube.com/watch?v=${track.videoId}`;
-	await playerService.play(youtubeUrl, playbackOptions);
+	if (directUrl) {
+		console.log(`Playing: ${directUrl}`);
+		await playerService.play(directUrl, playbackOptions);
+	} else if (track) {
+		const artists =
+			track.artists.length > 0
+				? track.artists.map(artist => artist.name).join(', ')
+				: 'Unknown Artist';
+		console.log(`Playing: ${track.title} — ${artists}`);
+		const youtubeUrl = `https://www.youtube.com/watch?v=${track.videoId}`;
+		await playerService.play(youtubeUrl, playbackOptions);
+	}
 }
 
 if (command === 'plugins') {

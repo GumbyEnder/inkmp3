@@ -10,7 +10,7 @@ import {useFavorites} from '../../stores/favorites.store.tsx';
 import {usePlaylist} from '../../hooks/usePlaylist.ts';
 import {KEYBINDINGS} from '../../utils/constants.ts';
 import {ICONS} from '../../utils/icons.ts';
-import {truncate} from '../../utils/format.ts';
+import {truncate, formatTime} from '../../utils/format.ts';
 import {useCallback, useRef, useEffect, useState} from 'react';
 import {logger} from '../../services/logger/logger.service.ts';
 import {useTerminalSize} from '../../hooks/useTerminalSize.ts';
@@ -331,7 +331,18 @@ function SearchResults({
 	}
 
 	// Calculate responsive truncation
-	const maxTitleWidth = Math.max(20, Math.floor(columns * 0.4));
+	const maxTitleWidth = Math.max(20, Math.floor(columns * 0.35));
+
+	// Extract track info helper
+	const getTrackInfo = (result: SearchResult) => {
+		if (result.type !== 'song') return null;
+		const track = result.data as Track;
+		const artistName =
+			track.artists.length > 0 ? track.artists.map(a => a.name).join(', ') : '';
+		const albumName = track.album?.name || '';
+		const duration = track.duration || 0;
+		return {artistName, albumName, duration};
+	};
 
 	return (
 		<Box flexDirection="column">
@@ -348,6 +359,18 @@ function SearchResults({
 						? isFavorite((data as Track).videoId)
 						: false;
 
+				const trackInfo = getTrackInfo(result);
+
+				// Color by type
+				const typeColor =
+					result.type === 'song'
+						? theme.colors.primary
+						: result.type === 'artist'
+							? theme.colors.accent
+							: result.type === 'album'
+								? theme.colors.secondary
+								: theme.colors.dim;
+
 				return (
 					<Box
 						key={index}
@@ -362,7 +385,7 @@ function SearchResults({
 						</Text>
 
 						<Text
-							color={isSelected ? theme.colors.primary : theme.colors.dim}
+							color={isSelected ? theme.colors.primary : typeColor}
 							bold={isSelected}
 						>
 							{result.type.toUpperCase().padEnd(10)}
@@ -375,6 +398,43 @@ function SearchResults({
 							{isFav ? `${ICONS.HEART} ` : ''}
 							{truncate(title, maxTitleWidth)}
 						</Text>
+
+						{trackInfo && (
+							<>
+								{trackInfo.artistName && (
+									<Text
+										color={
+											isSelected ? theme.colors.primary : theme.colors.accent
+										}
+										bold={isSelected}
+									>
+										{' '}
+										{truncate(trackInfo.artistName, 18)}
+									</Text>
+								)}
+
+								{trackInfo.albumName && (
+									<Text
+										color={isSelected ? theme.colors.primary : theme.colors.dim}
+									>
+										{' '}
+										{truncate(trackInfo.albumName, 16)}
+									</Text>
+								)}
+
+								{trackInfo.duration > 0 && (
+									<Text
+										color={
+											isSelected ? theme.colors.primary : theme.colors.secondary
+										}
+										bold={isSelected}
+									>
+										{' '}
+										{formatTime(trackInfo.duration)}
+									</Text>
+								)}
+							</>
+						)}
 					</Box>
 				);
 			})}

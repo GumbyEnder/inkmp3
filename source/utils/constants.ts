@@ -133,10 +133,8 @@ export const KEYBINDINGS = {
 
 	// Search
 	CLEAR_SEARCH: ['escape'],
-	NEXT_RESULT: ['tab'],
-	PREV_RESULT: ['shift+tab'],
-	INCREASE_RESULTS: [']'],
-	DECREASE_RESULTS: ['['],
+	INCREASE_RESULTS: ['ctrl+m'],
+	DECREASE_RESULTS: ['ctrl+l'],
 	SEARCH_FILTER_ARTIST: ['ctrl+a'],
 	SEARCH_FILTER_ALBUM: ['ctrl+l'],
 	SEARCH_FILTER_YEAR: ['ctrl+y'],
