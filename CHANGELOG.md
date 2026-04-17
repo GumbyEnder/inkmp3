@@ -1,3 +1,9 @@
+## [0.0.70](https://github.com/involvex/youtube-music-cli/compare/v0.0.69...v0.0.70) (2026-04-17)
+
+### Bug Fixes
+
+- **web:** correct cross-platform root path validation for static files ([66df09a](https://github.com/involvex/youtube-music-cli/commit/66df09ad8ae639eba6847c66141d5d66d51a8daa))
+
 ## [0.0.69](https://github.com/involvex/youtube-music-cli/compare/v0.0.68...v0.0.69) (2026-04-16)
 
 ### Features
