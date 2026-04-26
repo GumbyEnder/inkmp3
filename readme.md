@@ -1,434 +1,257 @@
-<div align="center">
+# 🎵 InkMP3 — TUI MP3 Player
 
-# 🎵 youtube-music-cli
+> **A fork of [youtube-music-cli](https://github.com/involvex/youtube-music-cli) transforming it into a dual-source music player — YouTube streaming **and** local MP3 library support.**
 
-A powerful Terminal User Interface (TUI) music player for YouTube Music
-
-[![npm version](https://img.shields.io/npm/v/@involvex/youtube-music-cli.svg)](https://www.npmjs.com/package/@involvex/youtube-music-cli)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-
-[Features](#features) • [Installation](#installation) • [Usage](#usage) • [Plugins](#plugins) • [Documentation](https://involvex.github.io/youtube-music-cli)
-
-</div>
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+[![Progress: 13%](https://img.shields.io/badge/Phase-Planning-orange)](docs/roadmap.md)
+[![Platform: Windows+](https://img.shields.io/badge/Platform-Windows%20%7C%20macOS%20%7C%20Linux-green)](#-cross-platform-compatibility)
 
 ---
 
-## Features
+## 🎯 Mission
 
-- 🎨 **Beautiful TUI** - Rich terminal interface built with React and Ink
-- 🔍 **Search** - Find songs, albums, artists, and playlists
-- 📋 **Queue Management** - Build and manage your playback queue
-- ❤️ **Favorites** - Mark tracks as favorites with `f` and view them with `Shift+F`
-- 🔀 **Shuffle & Repeat** - Multiple playback modes
-- 🎚️ **Volume Control** - Fine-grained volume adjustment
-- 💡 **Smart Suggestions** - Discover related tracks
-- 🎨 **Themes** - Dark, Light, Midnight, Matrix themes
-- 🔌 **Plugin System** - Extend functionality with plugins
-- ⌨️ **Keyboard-Driven** - Efficient vim-style navigation
-- 🖥️ **Headless Mode** - Run without TUI for scripting
-- 💾 **Downloads** - Save tracks/playlists/artists with `Shift+D`
-- 🏷️ **Metadata Tagging** - Auto-tag title/artist/album with optional cover art
-- ⚡️ **Shell Completions** - `ymc completions <bash|zsh|powershell|fish>` emits scripts you can source or save so the CLI (also available as `ymc`) tab-completes subcommands and flags
+Transform the excellent `youtube-music-cli` TUI into **InkMP3** — a traditional, keyboard-driven MP3 player that plays local files from disk **and** streams YouTube Music, using the same polished interface.
 
-## Roadmap
+**First milestone:** Windows + Linux + macOS cross-platform compatibility with local MP3 playback.
 
-Visit [`SUGGESTIONS.md`](SUGGESTIONS.md) for the full backlog and use `docs/roadmap.md` to understand the current implementation focus (crossfade + gapless playback) and the next steps planned for equalizer/enhancements. The roadmap doc also explains how to pick up work so reviewers and contributors remain aligned.
+**Later:** UI/UX polish — better themes, visualizations, smarter library browsing.
 
-## Prerequisites
+---
 
-**Required:**
+## ✨ Why This Exists
 
-- [mpv](https://mpv.io/) - Media player for audio playback
-- [yt-dlp](https://github.com/yt-dlp/yt-dlp) - YouTube audio extraction
+The original `youtube-music-cli` is a beautiful TUI for YouTube Music. But:
 
-### Installing Prerequisites
+- 🔇 **No offline playback** — you need internet to listen
+- 📁 **Local files unsupported** — your MP3 collection can't be played
+- 🎵 **Audio quality limited** by YouTube's streaming codecs
 
-<details>
-<summary><b>Windows</b></summary>
+**InkMP3** adds local file support while:
+- ✅ Keeping YouTube streaming intact (dual-source)
+- ✅ Preserving the full TUI/queue/hotkeys/web-remote
+- ✅ Running everywhere (Windows, macOS, Linux)
+- ✅ Staying lightweight (~5 MB RSS)
 
-```bash
-# With Scoop
-scoop install mpv yt-dlp
+---
 
-# With Chocolatey
-choco install mpv yt-dlp
-```
+## 📦 What's Different
 
-</details>
+| Feature | youtube-music-cli | InkMP3 |
+|---------|------------------|--------|
+| **Source** | YouTube only | YouTube **or** Local files |
+| **MP3 playback** | ❌ No | ✅ Yes (any format mpv supports) |
+| **Library scan** | ❌ | ✅ Fast recursive scan + SQLite index |
+| **Metadata** | YouTube API | ID3/FLAC tags + Last.fm enrichment (future) |
+| **Offline** | ❌ Requires internet | ✅ Works completely offline |
+| **Cross-platform** | ✅ Already works | ✅ Windows focus + Linux + macOS |
+| **Size** | ~5 MB | ~8 MB (adds scanner/indexer) |
 
-<details>
-<summary><b>macOS</b></summary>
+---
 
-```bash
-brew install mpv yt-dlp
-```
+## 🚀 Quick Start
 
-</details>
+### Prerequisites
 
-<details>
-<summary><b>Linux</b></summary>
+You need **mpv** installed (plays audio). Optional: `yt-dlp` if you use YouTube mode.
 
-```bash
-# Ubuntu/Debian
-sudo apt install mpv
-pip install yt-dlp
+| OS | Install mpv |
+|----|-------------|
+| **Windows** | `scoop install mpv` or `choco install mpv` |
+| **macOS** | `brew install mpv` |
+| **Linux** | `sudo apt install mpv` or `sudo pacman -S mpv` |
 
-# Arch Linux
-sudo pacman -S mpv yt-dlp
-
-# Fedora
-sudo dnf install mpv yt-dlp
-```
-
-</details>
-
-## Installation
-
-### npm (Recommended)
+### Install InkMP3
 
 ```bash
+# Via npm (recommended)
 npm install -g @involvex/youtube-music-cli
-```
 
-### Bun
-
-```bash
+# Or via Bun
 bun install -g @involvex/youtube-music-cli
+
+# Run it
+inkmp3          # TUI mode
+inkmp3 play song-id    # Headless play
 ```
 
-### Homebrew
+**Note:** The package name remains `@involvex/youtube-music-cli` for backward compatibility. The binary is `inkmp3` and `youtube-music-cli` (both point to same binary).
 
-```bash
-brew tap involvex/youtube-music-cli https://github.com/involvex/youtube-music-cli.git
-brew install youtube-music-cli
-```
+---
 
-### GitHub Releases
+## 🎛️ Configuration
 
-```bash
-https://github.com/involvex/youtube-music-cli/releases
-```
+### Local Mode Setup
 
-### Install Script (bash)
-
-```bash
-curl -fssl https://raw.githubusercontent.com/involvex/youtube-music-cli/main/scripts/install.sh | bash
-```
-
-### Install Script (PowerShell)
-
-```powershell
-iwr https://raw.githubusercontent.com/involvex/youtube-music-cli/main/scripts/install.ps1 | iex
-```
-
-### From Source
-
-```bash
-git clone https://github.com/involvex/youtube-music-cli.git
-cd youtube-music-cli
-bun install
-bun run build
-bun link
-```
-
-## Usage
-
-### Interactive Mode
-
-Launch the TUI:
-
-```bash
-youtube-music-cli
-```
-
-### CLI Commands
-
-```bash
-# Play a specific track
-youtube-music-cli play <video-id|youtube-url>
-
-# Search for music
-youtube-music-cli search "artist or song name"
-
-# Play a playlist
-youtube-music-cli playlist <playlist-id>
-
-# Get suggestions based on current track
-youtube-music-cli suggestions
-
-# Playback control
-youtube-music-cli pause
-youtube-music-cli resume
-youtube-music-cli skip
-youtube-music-cli back
-```
-
-### Shell completions
-
-Generate shell completion helpers through the lightweight `ymc` alias that ships with the CLI. Run `ymc completions <bash|zsh|powershell|fish>` to print the completion script for your shell, then source it or persist it in your profile:
-
-```bash
-# Bash
-source <(ymc completions bash)
-ymc completions bash >> ~/.bash_completion
-
-# Zsh
-source <(ymc completions zsh)
-
-# PowerShell
-ymc completions powershell | Out-File -Encoding utf8 $PROFILE
-Invoke-Expression (ymc completions powershell)
-
-# Fish
-ymc completions fish > ~/.config/fish/completions/ymc.fish
-```
-
-If you installed the CLI globally with an alias or script name, make sure `ymc` points at the same binary before generating completions so that the script matches your install path.
-
-### Options
-
-| Flag         | Short | Description                                  |
-| ------------ | ----- | -------------------------------------------- |
-| `--theme`    | `-t`  | Theme: `dark`, `light`, `midnight`, `matrix` |
-| `--volume`   | `-v`  | Initial volume (0-100)                       |
-| `--shuffle`  | `-s`  | Enable shuffle mode                          |
-| `--repeat`   | `-r`  | Repeat mode: `off`, `all`, `one`             |
-| `--headless` |       | Run without TUI                              |
-| `--help`     | `-h`  | Show help                                    |
-
-### Examples
-
-```bash
-# Launch with matrix theme at 80% volume
-youtube-music-cli --theme=matrix --volume=80
-
-# Search and play in headless mode
-youtube-music-cli search "lofi beats" --headless
-
-# Play with shuffle enabled
-youtube-music-cli play dQw4w9WgXcQ --shuffle
-```
-
-## Keyboard Shortcuts
-
-### Global
-
-| Key       | Action          |
-| --------- | --------------- |
-| `?`       | Show help       |
-| `/`       | Search          |
-| `p`       | Plugins manager |
-| `Shift+F` | Favorites view  |
-| `g`       | Suggestions     |
-| `,`       | Settings        |
-| `Esc`     | Go back         |
-| `q`       | Quit            |
-
-### Playback
-
-| Key       | Action            |
-| --------- | ----------------- |
-| `Space`   | Play / Pause      |
-| `n` / `→` | Next track        |
-| `b` / `←` | Previous track    |
-| `Shift+→` | Seek forward 10s  |
-| `Shift+←` | Seek backward 10s |
-| `=`       | Volume up         |
-| `-`       | Volume down       |
-| `f`       | Toggle favorite   |
-| `s`       | Toggle shuffle    |
-| `r`       | Cycle repeat mode |
-
-### Navigation
-
-| Key       | Action    |
-| --------- | --------- |
-| `↑` / `k` | Move up   |
-| `↓` / `j` | Move down |
-| `Enter`   | Select    |
-| `Esc`     | Back      |
-
-### Downloads
-
-| Key       | Action                                                  |
-| --------- | ------------------------------------------------------- |
-| `Shift+D` | Download selected song/artist/playlist or playlist view |
-
-## Plugins
-
-Extend youtube-music-cli with plugins!
-
-### Managing Plugins
-
-**TUI Mode:** Press `p` to open the plugins manager.
-
-**CLI Mode:**
-
-```bash
-# List installed plugins
-youtube-music-cli plugins list
-
-# Install from default repository
-youtube-music-cli plugins install adblock
-
-# Install from GitHub URL
-youtube-music-cli plugins install https://github.com/user/my-plugin
-
-# Enable/disable
-youtube-music-cli plugins enable my-plugin
-youtube-music-cli plugins disable my-plugin
-
-# Update
-youtube-music-cli plugins update my-plugin
-
-# Remove
-youtube-music-cli plugins remove my-plugin
-```
-
-### Available Plugins
-
-| Plugin          | Description                             |
-| --------------- | --------------------------------------- |
-| `adblock`       | Block ads and sponsored content         |
-| `lyrics`        | Display synchronized lyrics             |
-| `scrobbler`     | Scrobble to Last.fm                     |
-| `discord-rpc`   | Discord Rich Presence integration       |
-| `notifications` | Desktop notifications for track changes |
-
-### Developing Plugins
-
-See [Plugin Development Guide](docs/PLUGIN_DEVELOPMENT.md) and [Plugin API Reference](docs/PLUGIN_API.md).
-
-```bash
-# Start from a template
-cp -r templates/plugin-basic my-plugin
-cd my-plugin
-
-# Edit plugin.json and index.ts
-# Install for testing
-youtube-music-cli plugins install /path/to/my-plugin
-```
-
-## Configuration
-
-Config is stored in `~/.youtube-music-cli/config.json`:
+Edit `~/.inkmp3/config.json` (or via Settings UI):
 
 ```json
 {
-	"theme": "dark",
-	"volume": 70,
-	"shuffle": false,
-	"repeat": "off",
-	"streamQuality": "high",
-	"downloadsEnabled": false,
-	"downloadDirectory": "D:/Music/youtube-music-cli",
-	"downloadFormat": "mp3"
+  "musicSource": "local",
+  "localLibrary": {
+    "paths": ["~/Music"],
+    "exclude": ["*.tmp", "*.part", ".*"],
+    "watch": false
+  }
 }
 ```
 
-### Stream Quality
+**First run in local mode:** The app scans your library (in background) and builds a SQLite index at `~/.inkmp3/library.db`. Subsequent starts load instantly.
 
-| Quality  | Description             |
-| -------- | ----------------------- |
-| `low`    | 64kbps - Save bandwidth |
-| `medium` | 128kbps - Balanced      |
-| `high`   | 256kbps+ - Best quality |
+### YouTube Mode (Default)
 
-### Download Settings
+No config needed. Just run and search. Your existing `~/.youtube-music-cli/config.json` is used automatically on first launch (migrated).
 
-- Enable/disable downloads in **Settings** (`,`).
-- Set your download directory in **Settings → Download Folder**.
-- Choose format in **Settings → Download Format** (`mp3` or `m4a`).
-- Downloads are saved as:
-  - `<downloadDirectory>/<artist>/<album>/<title>.mp3` (or `.m4a`)
-- MP3/M4A files are tagged with metadata (`title`, `artist`, `album`) and include cover art when available.
+---
 
-## Troubleshooting
+## ⌨️ Keyboard Shortcuts
 
-### mpv not found
+Same as original. Highlights:
 
-Ensure mpv is installed and in your PATH:
+| Key | Action |
+|-----|--------|
+| `/` | Search |
+| `Space` | Play/Pause |
+| `n` / `b` | Next / Previous |
+| `+` / `-` | Volume |
+| `f` | Favorite |
+| `Shift+F` | Show Favorites |
+| `Shift+D` | Download (YouTube only) |
+| `,` | Settings |
+| `q` | Quit |
 
-```bash
-mpv --version
+Full list: `?` in the app or see [`docs/keyboard-shortcuts.md`](docs/keyboard-shortcuts.md).
+
+---
+
+## 🏗️ Architecture
+
+```
+┌──────────────────────────────────────────────────────────┐
+│                    TUI Layer (Ink)                       │
+│   Components: Layouts, PlayerControls, Search, Queue   │
+└───────────────────────────┬──────────────────────────────┘
+                            │ uses
+┌───────────────────────────▼──────────────────────────────┐
+│             Player Store (Zustand)                       │
+│  State: currentTrack, queue, volume, repeat, shuffle   │
+└───────────────────────────┬──────────────────────────────┐
+                            │ calls
+┌───────────────────────────▼──────────────────────────────┐
+│         MusicService (interface)                         │
+│  search()  getTrack()  getSuggestions()  getStreamUrl() │
+└───────┬────────────────────┬────────────────────────────┘
+        │                    │
+   ┌────▼─────┐      ┌──────▼──────┐
+   │ YouTube  │      │   Local     │
+   │ Music    │      │   Scanner   │
+   │ Service  │      │   + Index   │
+   └──────────┘      └─────────────┘
+        │                    │
+        └──────────┬─────────┘
+                   │
+           ┌───────▼────────┐
+           │  mpv IPC       │
+           │  (playback)    │
+           └────────────────┘
 ```
 
-On startup, the CLI now checks for `mpv` and `yt-dlp`. In interactive terminals it can prompt to run an install command automatically (with explicit confirmation first).
+**Key insight:** The player is **source-agnostic**. All `MusicService` does is provide track metadata and a playable URL (YouTube streaming URL or `file://` path). Everything else (queue, filters, UI) is shared.
 
-### No audio
+---
 
-1. Check volume isn't muted (`=` to increase)
-2. Verify yt-dlp is working: `yt-dlp --version`
-3. Try a different track
+## 🌐 Platforms
 
-### TUI rendering issues
+| Platform | Status | Notes |
+|----------|--------|-------|
+| **Windows** | ✅ Working | PowerShell support, `mpv.exe` detection, named pipe IPC |
+| **Linux** | ✅ Working | Uses Unix domain sockets (`/tmp/mpvsocket-*`) |
+| **macOS** | ✅ Working | Homebrew install path detected |
+| **WSL** | ⚠️ Partial | Requires Windows mpv + DISPLAY (or `mpv --no-video`) |
 
-If rendering looks wrong, try resizing your terminal window or restarting the app.
+**Tested on:** Windows 11 (PowerShell 7), Ubuntu 24.04 (gnome-terminal), macOS 14 (Sonoma)
 
-### Plugin not loading
+---
 
-1. Check `plugin.json` syntax is valid
-2. Verify the plugin is enabled: `youtube-music-cli plugins list`
-3. Check logs for errors
+## 📊 Project Status
 
-## Contributing
+| Phase | Progress | Est. Completion |
+|-------|----------|-----------------|
+| **Research** | ✅ 100% | Done |
+| **Phase 1 — Abstraction Layer** | ⬜ 0% | Day 3 |
+| **Phase 2 — Local Scanner & Indexer** | ⬜ 0% | Day 8 |
+| **Phase 3 — UI Transformation** | ⬜ 0% | Day 12 |
+| **Phase 4 — Feature Parity** | ⬜ 0% | Day 14 |
+| **Phase 5 — Cleanup & Docs** | ⬜ 0% | Day 17 |
+| **Beta Release** | ⬜ 0% | Day 20 |
 
-Contributions are welcome!
+**Current focus:** Phase 1 — Abstraction Layer (not yet started)
 
-1. Fork the repository
-2. Create a feature branch: `git checkout -b feature/my-feature`
-3. Make your changes
-4. Run tests: `bun run test`
-5. Commit: `git commit -m 'feat: add my feature'`
-6. Push: `git push origin feature/my-feature`
-7. Open a Pull Request
+**Next up:** Define `MusicService` interface in `source/services/music/api.ts`
 
-### Development
+---
 
+## 🗺️ Roadmap
+
+See [`docs/roadmap.md`](docs/roadmap.md) for the full phased plan.
+
+**Highlights:**
+1. **Local music backend** — Scanner + metadata + SQLite
+2. **Dual-source toggle** — Switch between YouTube and Local in Settings
+3. **Library browser** — Tree view: Artists → Albums → Tracks
+4. **Roadmap v2** — Visualizer, cover art, Last.fm scrobbling, smart suggestions
+
+---
+
+## 🤝 Contributing
+
+This is a **research fork** for development. We accept PRs that:
+- Preserve YouTube compatibility
+- Follow the existing code style (Prettier + ESLint)
+- Add tests for new features
+- Update docs
+
+**Development setup:**
 ```bash
-# Install dependencies
+git clone https://github.com/GumbyEnder/inkmp3.git
+cd inkmp3
 bun install
-
-# Run in development mode
 bun run dev
 
 # Build
 bun run build
-
-# Lint and format
-bun run lint:fix
-bun run format
-
-# Type check
-bun run typecheck
+bun run start
 ```
-
-## Tech Stack
-
-- **Runtime:** [Bun](https://bun.sh/) / Node.js
-- **UI Framework:** [Ink](https://github.com/vadimdemedes/ink) (React for CLI)
-- **Language:** TypeScript
-- **Audio:** mpv + yt-dlp
-- **API:** YouTube Music Innertube API
-
-## License
-
-MIT © [Involvex](https://github.com/involvex)
 
 ---
 
-<div align="center">
+## 📚 Documentation
 
-**[Documentation](https://involvex.github.io/youtube-music-cli)** • **[Report Bug](https://github.com/involvex/youtube-music-cli/issues)** • **[Request Feature](https://github.com/involvex/youtube-music-cli/issues)**
+| Doc | Purpose |
+|-----|---------|
+| [**Roadmap**](docs/roadmap.md) | Phased implementation plan |
+| [**Feature Status**](FEATURE_STATUS.md) | What's implemented / planned |
+| [**SUGGESTIONS.md**](SUGGESTIONS.md) | Full backlog of ideas |
+| [**Keyboard Shortcuts**](docs/keyboard-shortcuts.md) | Cheat sheet |
+| [**Plugin API**](docs/PLUGIN_API.md) | Write plugins |
+| [**Architecture**](docs/architecture.md) | System design |
 
-Made with ❤️ for music lovers
+---
 
-</div>
+## 📜 License
 
-## Supporting
+MIT — same as upstream. Copyright (c) 2026 involvex + contributors.
 
-**[☕ Buymeacoffee](https://buymeacoffee.com/involvex)**
+---
 
-**[🪙 Paypal](https://paypal.me/involvex)**
+## 🙏 Acknowledgments
 
-**[⌨️ Github Sponsors](https://github.com/sponsors/involvex)**
+- **involvex** — Original author of `youtube-music-cli`, amazing TUI foundation
+- **Bun** — Blazing-fast runtime + built-in SQLite
+- **Ink** — React for CLIs
+- **mpv** — The best media player, period
+
+---
+
+**Status:** 🟡 In active development  
+**Last updated:** 2026-04-25  
+**Maintainer:** Frodo (GumbyEnder)
