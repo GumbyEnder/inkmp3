@@ -1,6 +1,6 @@
 // YouTube playlist import service
 import type {YouTubePlaylist} from '../../types/import.types.ts';
-import {getMusicService} from '../youtube-music/api.ts';
+import {getMusicService} from '../music/factory.ts';
 import {logger} from '../logger/logger.service.ts';
 
 class YouTubeImportService {

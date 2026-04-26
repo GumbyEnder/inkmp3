@@ -13,7 +13,7 @@ import type {
 	TogglePlayerModeAction,
 	DetachAction,
 } from './actions.ts';
-import type {SearchFilters} from './youtube-music.types.ts';
+import type {SearchFilters} from '../services/music/api.ts';
 
 export interface NavigationState {
 	currentView: string;

@@ -1,6 +1,6 @@
 // Playlist management hook
 import {getConfigService} from '../services/config/config.service.ts';
-import type {Playlist, Track} from '../types/youtube-music.types.ts';
+import type {Playlist, Track} from '../services/music/api.ts';
 import {useState, useCallback, useEffect} from 'react';
 
 export type AddTrackResult = 'added' | 'duplicate';

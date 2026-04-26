@@ -1,5 +1,5 @@
 // Playlist type definitions
-import type {Track} from './youtube-music.types.ts';
+import type {Track} from '../services/music/api.ts';
 
 export interface Playlist {
 	playlistId: string;

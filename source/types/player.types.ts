@@ -29,7 +29,7 @@ import type {
 	SetSpeedAction,
 } from './actions.ts';
 
-import type {Track} from './youtube-music.types.ts';
+import type {Track} from '../services/music/api.ts';
 
 export interface PlayerState {
 	currentTrack: Track | null;

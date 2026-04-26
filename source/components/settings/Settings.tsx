@@ -28,6 +28,7 @@ const EQUALIZER_PRESETS: EqualizerPreset[] = [
 const VOLUME_FADE_PRESETS = [0, 1, 2, 3, 5];
 
 const SETTINGS_ITEMS = [
+	'Music Source',
 	'Stream Quality',
 	'Audio Normalization',
 	'Gapless Playback',
@@ -49,6 +50,7 @@ const SETTINGS_ITEMS = [
 	'Export Playlists',
 	'Custom Keybindings',
 	'Manage Plugins',
+	'Music Source',
 ] as const;
 
 export default function Settings() {
@@ -71,6 +73,9 @@ export default function Settings() {
 	);
 	const [equalizerPreset, setEqualizerPreset] = useState<EqualizerPreset>(
 		config.get('equalizerPreset') ?? 'flat',
+	);
+	const [musicSource, setMusicSource] = useState<'youtube' | 'local'>(
+		config.get('musicSource') ?? 'youtube',
 	);
 	const [subtitlesEnabled, setSubtitlesEnabled] = useState(
 		config.get('subtitlesEnabled') ?? false,
@@ -242,6 +247,17 @@ export default function Settings() {
 		startTimer(nextPreset);
 	};
 
+	const cycleMusicSource = () => {
+		const nextSource = musicSource === 'youtube' ? 'local' : 'youtube';
+		setMusicSource(nextSource);
+		config.set('musicSource', nextSource);
+		// Show notification of source change
+		getNotificationService().notify(
+			'Music Source Changed',
+			nextSource === 'youtube' ? 'YouTube Music' : 'Local Library',
+		);
+	};
+
 	const handleSelect = () => {
 		if (selectedIndex === 0) {
 			toggleQuality();
@@ -283,6 +299,8 @@ export default function Settings() {
 			dispatch({category: 'NAVIGATE', view: VIEW.KEYBINDINGS});
 		} else if (selectedIndex === 19) {
 			dispatch({category: 'NAVIGATE', view: VIEW.PLUGINS});
+		} else if (selectedIndex === 20) {
+			cycleMusicSource();
 		}
 	};
 
@@ -664,6 +682,21 @@ export default function Settings() {
 					Manage Plugins
 				</Text>
 			</Box>
+			{/* Music Source */}
+			<Box paddingX={1}>
+				<Text
+					backgroundColor={
+						selectedIndex === 20 ? theme.colors.primary : undefined
+					}
+					color={
+						selectedIndex === 20 ? theme.colors.background : theme.colors.text
+					}
+					bold={selectedIndex === 20}
+				>
+					Music Source: {musicSource.toUpperCase()}
+				</Text>
+			</Box>
+
 
 			{/* Info */}
 			<Box marginTop={1}>

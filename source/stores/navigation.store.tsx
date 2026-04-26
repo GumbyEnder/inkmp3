@@ -3,7 +3,7 @@ import type {
 	NavigationState,
 	NavigationAction,
 } from '../types/navigation.types.ts';
-import type {SearchFilters} from '../types/youtube-music.types.ts';
+import type {SearchFilters} from '../services/music/api.ts';
 import {
 	createContext,
 	useContext,

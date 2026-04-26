@@ -51,6 +51,13 @@ class ConfigService {
 			crossfadeDuration: 0,
 			volumeFadeDuration: 0,
 			equalizerPreset: 'flat',
+			// InkMP3 — dual-source music selector (added 2026-04-25)
+			musicSource: 'youtube',
+			localLibrary: {
+				paths: [path.join(process.env.HOME || process.env.USERPROFILE || '', 'Music')],
+				exclude: ['*.tmp', '*.part', '.*'],
+				watch: false,
+			},
 		};
 	}
 

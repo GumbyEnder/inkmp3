@@ -11,7 +11,7 @@ import {useKeyBinding} from '../../hooks/useKeyboard.ts';
 import {truncate, formatTime} from '../../utils/format.ts';
 import {useTerminalSize} from '../../hooks/useTerminalSize.ts';
 import {ICONS} from '../../utils/icons.ts';
-import {getMusicService} from '../../services/youtube-music/api.ts';
+import {getMusicService} from '../../services/music/factory.ts';
 import {type Track} from '../../types/youtube-music.types.ts';
 
 export default function HomeLayout() {

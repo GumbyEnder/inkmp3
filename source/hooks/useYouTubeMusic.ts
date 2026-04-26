@@ -6,8 +6,8 @@ import type {
 	Album,
 	Artist,
 	Playlist,
-} from '../types/youtube-music.types.ts';
-import {getMusicService} from '../services/youtube-music/api.ts';
+} from '../services/music/api.ts';
+import {getMusicService} from '../services/music/factory.ts';
 import {useState, useCallback} from 'react';
 
 export function useYouTubeMusic() {

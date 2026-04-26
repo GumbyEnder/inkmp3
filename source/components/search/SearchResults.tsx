@@ -14,7 +14,7 @@ import {truncate, formatTime} from '../../utils/format.ts';
 import {useCallback, useRef, useEffect, useState} from 'react';
 import {logger} from '../../services/logger/logger.service.ts';
 import {useTerminalSize} from '../../hooks/useTerminalSize.ts';
-import {getMusicService} from '../../services/youtube-music/api.ts';
+import {getMusicService} from '../../services/music/factory.ts';
 import {getDownloadService} from '../../services/download/download.service.ts';
 
 // Generate unique component instance ID

@@ -18,8 +18,8 @@ import {getConfigService} from './services/config/config.service.ts';
 import {getPlayerService} from './services/player/player.service.ts';
 import {APP_VERSION} from './utils/constants.ts';
 import {ensurePlaybackDependencies} from './services/player/dependency-check.service.ts';
-import {getMusicService} from './services/youtube-music/api.ts';
-import type {Track} from './types/youtube-music.types.ts';
+import {getMusicService} from './services/music/factory.ts';
+import type {Track} from './services/music/api.ts';
 
 const isStandalone =
 	(process as unknown as {isStandaloneExecutable?: boolean})

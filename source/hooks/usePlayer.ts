@@ -2,7 +2,7 @@
 import {useCallback} from 'react';
 import {usePlayer as usePlayerStore} from '../stores/player.store.tsx';
 import {getConfigService} from '../services/config/config.service.ts';
-import type {Track} from '../types/youtube-music.types.ts';
+import type {Track} from '../services/music/api.ts';
 
 export function usePlayer() {
 	const {state, dispatch, ...playerStore} = usePlayerStore();
@@ -20,7 +20,7 @@ export function usePlayer() {
 				dispatch({category: 'PLAY', track});
 			} else {
 				// Add to queue if not already there
-				const isInQueue = state.queue.some(t => t.videoId === track.videoId);
+				const isInQueue = state.queue.some(t => t.videoId === track.id);
 
 				if (!isInQueue) {
 					dispatch({category: 'ADD_TO_QUEUE', track});
@@ -28,7 +28,7 @@ export function usePlayer() {
 
 				// Find position and play
 				const position = state.queue.findIndex(
-					t => t.videoId === track.videoId,
+					t => t.videoId === track.id,
 				);
 				if (position >= 0) {
 					dispatch({category: 'SET_QUEUE_POSITION', position});
@@ -39,7 +39,7 @@ export function usePlayer() {
 
 			// Add to history
 			const config = getConfigService();
-			config.addToHistory(track.videoId);
+			config.addToHistory(track.id);
 		},
 		[state.queue, dispatch],
 	);

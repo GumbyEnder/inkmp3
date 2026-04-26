@@ -19,7 +19,7 @@ import {VIEW} from './utils/constants.ts';
 import {getConfigService} from './services/config/config.service.ts';
 import {getNotificationService} from './services/notification/notification.service.ts';
 import {loadPlayerState} from './services/player-state/player-state.service.ts';
-import type {Track} from './types/youtube-music.types.ts';
+import type {Track} from './services/music/api.ts';
 
 import {useKeyBinding} from './hooks/useKeyboard.ts';
 import {KEYBINDINGS} from './utils/constants.ts';

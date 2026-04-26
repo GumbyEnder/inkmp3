@@ -72,4 +72,15 @@ export interface Config {
 	llm?: LLMConfig;
 	llmUsage?: LLMUsage;
 	llmChatHistory?: ChatMessage[];
+	/** Music source: 'youtube' for YouTube Music, 'local' for disk library */
+	musicSource?: 'youtube' | 'local';
+	/** Local library configuration — only used when musicSource=local */
+	localLibrary?: {
+		/** Array of root directories to scan for music files */
+		paths: string[];
+		/** Glob patterns to exclude (e.g., ['*.tmp', '.*', '*.part']) */
+		exclude?: string[];
+		/** Watch for filesystem changes and re-index automatically */
+		watch?: boolean;
+	};
 }

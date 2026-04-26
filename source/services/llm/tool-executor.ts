@@ -1,6 +1,6 @@
 // Tool executor for LLM function calls
 import type {ToolResult} from '../../types/llm.types.ts';
-import {getMusicService} from '../youtube-music/api.ts';
+import {getMusicService} from '../music/factory.ts';
 import {getConfigService} from '../config/config.service.ts';
 import {logger} from '../logger/logger.service.ts';
 

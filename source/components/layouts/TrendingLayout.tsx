@@ -4,8 +4,8 @@ import {useState, useEffect} from 'react';
 import {useTheme} from '../../hooks/useTheme.ts';
 import {useNavigation} from '../../hooks/useNavigation.ts';
 import {usePlayer} from '../../hooks/usePlayer.ts';
-import {getMusicService} from '../../services/youtube-music/api.ts';
-import type {Track} from '../../types/youtube-music.types.ts';
+import {getMusicService} from '../../services/music/factory.ts';
+import type {Track} from '../../services/music/api.ts';
 
 export default function TrendingLayout() {
 	const {theme} = useTheme();

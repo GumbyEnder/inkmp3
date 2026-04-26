@@ -6,7 +6,7 @@ import type {
 	SearchFilters,
 	SearchResult,
 	Track,
-} from '../types/youtube-music.types.ts';
+} from '../services/music/api.ts';
 
 const DURATION_BUCKETS: Record<
 	Exclude<SearchDurationFilter, 'all'>,
@@ -25,10 +25,10 @@ function includesIgnoreCase(
 }
 
 function isSongResult(result: SearchResult): result is {
-	type: 'song';
+	type: 'track';
 	data: Track;
 } {
-	return result.type === 'song';
+	return result.type === 'track';
 }
 
 function isAlbumResult(result: SearchResult): result is {

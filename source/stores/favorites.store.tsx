@@ -6,7 +6,7 @@ import {
 	useReducer,
 	type ReactNode,
 } from 'react';
-import type {Track} from '../types/youtube-music.types.ts';
+import type {Track} from '../services/music/api.ts';
 import {
 	loadFavorites,
 	saveFavorites,

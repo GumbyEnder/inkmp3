@@ -3,7 +3,7 @@ import path from 'node:path';
 import {spawn} from 'node:child_process';
 import {getConfigService} from '../config/config.service.ts';
 import {logger} from '../logger/logger.service.ts';
-import {getMusicService} from '../youtube-music/api.ts';
+import {getMusicService} from '../music/factory.ts';
 import type {DownloadFormat} from '../../types/config.types.ts';
 import type {
 	Playlist,

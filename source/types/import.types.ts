@@ -1,6 +1,6 @@
 // Playlist import type definitions
 
-import type {Track} from './youtube-music.types.ts';
+import type {Track} from '../services/music/api.ts';
 
 /** Supported import sources */
 export type ImportSource = 'spotify' | 'youtube';

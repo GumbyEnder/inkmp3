@@ -309,7 +309,7 @@ export function playerReducer(
 	}
 }
 
-import type {Track} from '../types/youtube-music.types.ts';
+import type {Track} from '../services/music/api.ts';
 
 type PlayerContextValue = {
 	state: PlayerState;
@@ -340,7 +340,7 @@ type PlayerContextValue = {
 };
 
 import {getConfigService} from '../services/config/config.service.ts';
-import {getMusicService} from '../services/youtube-music/api.ts';
+import {getMusicService} from '../services/music/factory.ts';
 import {useMemo} from 'react';
 
 const PlayerContext = createContext<PlayerContextValue | null>(null);
@@ -464,12 +464,12 @@ function PlayerManager() {
 
 		// Guard: Don't replay same track unless a new play request was explicitly dispatched
 		const currentTrackId = playerService.getCurrentTrackId?.() || '';
-		const isSameTrack = currentTrackId === track.videoId;
+		const isSameTrack = currentTrackId === track.id;
 		const isNewPlayRequest =
 			state.playRequestId !== lastPlayedRequestId.current;
 		if (isSameTrack && !isNewPlayRequest) {
 			logger.debug('PlayerManager', 'Track already playing, skipping', {
-				videoId: track.videoId,
+				videoId: track.id,
 			});
 			return;
 		}
@@ -478,7 +478,7 @@ function PlayerManager() {
 
 		logger.info('PlayerManager', 'Loading track', {
 			title: track.title,
-			videoId: track.videoId,
+			videoId: track.id,
 		});
 
 		const loadAndPlayTrack = async () => {
@@ -486,7 +486,7 @@ function PlayerManager() {
 			// to the still-running mpv process instead of spawning a new one.
 			const config = getConfigService();
 			const bgState = config.getBackgroundPlaybackState();
-			const trackUrl = `https://www.youtube.com/watch?v=${track.videoId}`;
+			const trackUrl = `https://www.youtube.com/watch?v=${track.id}`;
 			if (
 				bgState.enabled &&
 				bgState.ipcPath &&
@@ -494,7 +494,7 @@ function PlayerManager() {
 			) {
 				try {
 					await playerService.reattach(bgState.ipcPath, {
-						trackId: track.videoId,
+						trackId: track.id,
 						currentUrl: trackUrl,
 					});
 					config.clearBackgroundPlaybackState();
@@ -522,13 +522,13 @@ function PlayerManager() {
 			for (let attempt = 1; attempt <= MAX_RETRIES; attempt++) {
 				try {
 					logger.debug('PlayerManager', 'Starting playback with mpv', {
-						videoId: track.videoId,
+						videoId: track.id,
 						volume: state.volume,
 						attempt,
 					});
 
 					// Pass YouTube URL directly to mpv (it handles stream extraction via yt-dlp)
-					const youtubeUrl = `https://www.youtube.com/watch?v=${track.videoId}`;
+									const streamUrl = await musicService.getStreamUrl(track);
 					const config = getConfigService();
 					const artists =
 						track.artists?.map(a => a.name).join(', ') ?? 'Unknown';
@@ -564,7 +564,7 @@ function PlayerManager() {
 						true,
 					);
 
-					await playerService.play(youtubeUrl, {
+					await playerService.play(streamUrl, {
 						volume: state.volume,
 						audioNormalization: config.get('audioNormalization') ?? false,
 						proxy: config.get('proxy'),
@@ -583,7 +583,7 @@ function PlayerManager() {
 				} catch (error) {
 					logger.error('PlayerManager', 'Failed to load track', {
 						error: error instanceof Error ? error.message : String(error),
-						track: {title: track.title, videoId: track.videoId},
+						track: {title: track.title, videoId: track.id},
 						attempt,
 					});
 
@@ -837,7 +837,9 @@ function PlayerManager() {
 	return null;
 }
 
-export function PlayerProvider({children}: {children: ReactNode}) {
+export function PlayerProvider({	// Initialize MusicServiceFactory (InkMP3 P1-4)
+
+children}: {children: ReactNode}) {
 	const [state, dispatch] = useReducer(playerReducer, initialState);
 	const saveTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 	const isInitializedRef = useRef(false);
@@ -987,7 +989,7 @@ export function PlayerProvider({children}: {children: ReactNode}) {
 			play: (track: Track) => {
 				logger.info('PlayerProvider', 'play() action dispatched', {
 					title: track.title,
-					videoId: track.videoId,
+					videoId: track.id,
 				});
 				dispatch({category: 'PLAY', track});
 			},

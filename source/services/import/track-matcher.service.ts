@@ -6,7 +6,7 @@ import type {
 	TrackMatch,
 	MatchConfidence,
 } from '../../types/import.types.ts';
-import {getMusicService} from '../youtube-music/api.ts';
+import {getMusicService} from '../music/factory.ts';
 import {logger} from '../logger/logger.service.ts';
 
 interface MatchCandidate extends Track {
