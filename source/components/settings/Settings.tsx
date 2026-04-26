@@ -5,6 +5,7 @@ import TextInput from 'ink-text-input';
 import {useTheme} from '../../hooks/useTheme.ts';
 import {useNavigation} from '../../hooks/useNavigation.ts';
 import {getConfigService} from '../../services/config/config.service.ts';
+import {getMusicServiceFactory} from '../../services/music/index.ts';
 import {useKeyBinding} from '../../hooks/useKeyboard.ts';
 import {KEYBINDINGS, VIEW} from '../../utils/constants.ts';
 import {useSleepTimer} from '../../hooks/useSleepTimer.ts';
@@ -249,13 +250,16 @@ export default function Settings() {
 
 	const cycleMusicSource = () => {
 		const nextSource = musicSource === 'youtube' ? 'local' : 'youtube';
-		setMusicSource(nextSource);
-		config.set('musicSource', nextSource);
-		// Show notification of source change
-		getNotificationService().notify(
-			'Music Source Changed',
-			nextSource === 'youtube' ? 'YouTube Music' : 'Local Library',
-		);
+		// Switch via factory so LocalMusicService initializes if needed
+		getMusicServiceFactory().setSource(nextSource).then(() => {
+			setMusicSource(nextSource);
+			getNotificationService().notify(
+				'Music Source Changed',
+				nextSource === 'youtube' ? 'YouTube Music' : 'Local Library',
+			);
+		}).catch((err) => {
+			console.error('Failed to switch music source:', err);
+		});
 	};
 
 	const handleSelect = () => {
