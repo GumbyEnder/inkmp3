@@ -29,30 +29,30 @@ const argv = isStandalone ? process.argv.slice(1) : process.argv.slice(2);
 
 const cli = meow(
 	`
-	youtube-music-cli@${APP_VERSION}
+	INKMP3@${APP_VERSION}
 
 	🎵 Usage
-	  $ youtube-music-cli
-	  $ youtube-music-cli play <track-id|youtube-url>
-	  $ youtube-music-cli search <query>
-	  $ youtube-music-cli playlist <playlist-id>
-	  $ youtube-music-cli suggestions
-	  $ youtube-music-cli pause
-	  $ youtube-music-cli resume
-	  $ youtube-music-cli skip
-	  $ youtube-music-cli back
+	  $ INKMP3
+	  $ INKMP3 play <track-id|youtube-url>
+	  $ INKMP3 search <query>
+	  $ INKMP3 playlist <playlist-id>
+	  $ INKMP3 suggestions
+	  $ INKMP3 pause
+	  $ INKMP3 resume
+	  $ INKMP3 skip
+	  $ INKMP3 back
 
 	🔌 Plugin Commands
-	  $ youtube-music-cli plugins list
-	  $ youtube-music-cli plugins install <name|url>
-	  $ youtube-music-cli plugins remove <name>
-	  $ youtube-music-cli plugins update <name>
-	  $ youtube-music-cli plugins enable <name>
-	  $ youtube-music-cli plugins disable <name>
+	  $ INKMP3 plugins list
+	  $ INKMP3 plugins install <name|url>
+	  $ INKMP3 plugins remove <name>
+	  $ INKMP3 plugins update <name>
+	  $ INKMP3 plugins enable <name>
+	  $ INKMP3 plugins disable <name>
 
 	📥 Import Commands
-	  $ youtube-music-cli import spotify <url-or-id>
-	  $ youtube-music-cli import youtube <url-or-id>
+	  $ INKMP3 import spotify <url-or-id>
+	  $ INKMP3 import youtube <url-or-id>
 
 	⚙️  Options
 	  --theme, -t          Theme to use (dark, light, midnight, matrix, etc.)
@@ -70,20 +70,20 @@ const cli = meow(
 	  --help, -h           Show this help
 
 	🐚 Shell Completions
-	  $ youtube-music-cli completions bash
-	  $ youtube-music-cli completions zsh
-	  $ youtube-music-cli completions powershell
-	  $ youtube-music-cli completions fish
+	  $ INKMP3 completions bash
+	  $ INKMP3 completions zsh
+	  $ INKMP3 completions powershell
+	  $ INKMP3 completions fish
 
 	💡 Examples
-	  $ youtube-music-cli
-	  $ youtube-music-cli play dQw4w9WgXcQ
-	  $ youtube-music-cli search "Rick Astley"
-	  $ youtube-music-cli play dQw4w9WgXcQ --headless
-	  $ youtube-music-cli plugins install adblock
-	  $ youtube-music-cli import spotify "https://open.spotify.com/playlist/..."
-	  $ youtube-music-cli --web --web-port 3000
-	  $ youtube-music-cli completions powershell | Out-File $PROFILE
+	  $ INKMP3
+	  $ INKMP3 play dQw4w9WgXcQ
+	  $ INKMP3 search "Rick Astley"
+	  $ INKMP3 play dQw4w9WgXcQ --headless
+	  $ INKMP3 plugins install adblock
+	  $ INKMP3 import spotify "https://open.spotify.com/playlist/..."
+	  $ INKMP3 --web --web-port 3000
+	  $ INKMP3 completions powershell | Out-File $PROFILE
 `,
 	{
 		importMeta: import.meta,
@@ -277,7 +277,7 @@ if (command === 'plugins') {
 
 			case 'install': {
 				if (!pluginArg) {
-					console.error('Usage: youtube-music-cli plugins install <name|url>');
+					console.error('Usage: INKMP3 plugins install <name|url>');
 					process.exit(1);
 				}
 
@@ -302,7 +302,7 @@ if (command === 'plugins') {
 			case 'remove':
 			case 'uninstall': {
 				if (!pluginArg) {
-					console.error('Usage: youtube-music-cli plugins remove <name>');
+					console.error('Usage: INKMP3 plugins remove <name>');
 					process.exit(1);
 				}
 
@@ -326,7 +326,7 @@ if (command === 'plugins') {
 
 			case 'update': {
 				if (!pluginArg) {
-					console.error('Usage: youtube-music-cli plugins update <name>');
+					console.error('Usage: INKMP3 plugins update <name>');
 					process.exit(1);
 				}
 
@@ -347,7 +347,7 @@ if (command === 'plugins') {
 
 			case 'enable': {
 				if (!pluginArg) {
-					console.error('Usage: youtube-music-cli plugins enable <name>');
+					console.error('Usage: INKMP3 plugins enable <name>');
 					process.exit(1);
 				}
 
@@ -366,7 +366,7 @@ if (command === 'plugins') {
 
 			case 'disable': {
 				if (!pluginArg) {
-					console.error('Usage: youtube-music-cli plugins disable <name>');
+					console.error('Usage: INKMP3 plugins disable <name>');
 					process.exit(1);
 				}
 
@@ -385,7 +385,7 @@ if (command === 'plugins') {
 
 			default:
 				console.error(
-					'Usage: youtube-music-cli plugins <list|install|remove|update|enable|disable>',
+					'Usage: INKMP3 plugins <list|install|remove|update|enable|disable>',
 				);
 				process.exit(1);
 		}
@@ -398,7 +398,7 @@ if (command === 'plugins') {
 		const validShells: ShellType[] = ['bash', 'zsh', 'powershell', 'fish'];
 		if (!shell || !validShells.includes(shell)) {
 			console.error(
-				'Usage: youtube-music-cli completions <bash|zsh|powershell|fish>',
+				'Usage: INKMP3 completions <bash|zsh|powershell|fish>',
 			);
 			process.exit(1);
 		}
@@ -460,7 +460,7 @@ if (command === 'plugins') {
 
 			if (!source || !url) {
 				console.error(
-					'Usage: youtube-music-cli import <spotify|youtube> <url-or-id>',
+					'Usage: INKMP3 import <spotify|youtube> <url-or-id>',
 				);
 				process.exit(1);
 			}
@@ -583,7 +583,7 @@ if (command === 'plugins') {
 						console.log(
 							` Update available: ${APP_VERSION} → ${result.latestVersion}`,
 						);
-						console.log('Run: npm install -g @involvex/youtube-music-cli');
+						console.log('Run: npm install -g @involvex/INKMP3');
 						console.log('');
 					}
 				}

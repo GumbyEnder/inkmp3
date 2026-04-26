@@ -3,7 +3,7 @@ import * as fs from 'node:fs';
 import * as path from 'node:path';
 import * as os from 'node:os';
 
-const DEBUG_DIR = path.join(os.homedir(), '.youtube-music-cli');
+const DEBUG_DIR = path.join(os.homedir(), '.INKMP3');
 const DEBUG_FILE = path.join(DEBUG_DIR, 'debug.log');
 const MAX_LOG_SIZE = 5 * 1024 * 1024; // 5MB
 

@@ -4,7 +4,7 @@ This file provides guidance for AI agents operating in this repository.
 
 ## Project Overview
 
-**@involvex/youtube-music-cli** is a Terminal UI (TUI) music player for YouTube Music, built with React and TypeScript using Ink for terminal rendering. It features search, playback controls, queue management, and multiple UI themes.
+**@involvex/INKMP3** is a Terminal UI (TUI) music player for YouTube Music, built with React and TypeScript using Ink for terminal rendering. It features search, playback controls, queue management, and multiple UI themes.
 
 ## Build Commands
 
@@ -222,10 +222,10 @@ bunx ava tests/player-service-mpv-args.test.js --match "test name"
 ## CLI Subcommands
 
 ```
-youtube-music-cli                    # Interactive UI
-youtube-music-cli play <track-id>    # Play track
-youtube-music-cli search <query>     # Search and play
-youtube-music-cli playlist <id>      # Play playlist
-youtube-music-cli --theme=matrix    # Set theme
-youtube-music-cli --headless         # Run without TUI
+INKMP3                    # Interactive UI
+INKMP3 play <track-id>    # Play track
+INKMP3 search <query>     # Search and play
+INKMP3 playlist <id>      # Play playlist
+INKMP3 --theme=matrix    # Set theme
+INKMP3 --headless         # Run without TUI
 ```

@@ -151,7 +151,7 @@ export default function HomeLayout() {
 				justifyContent="center"
 			>
 				<Text bold color={theme.colors.primary}>
-					🎵 {ICONS.PLAY} youtube-music-cli {ICONS.PLAY} 🎵
+					🎵 {ICONS.PLAY} INKMP3 {ICONS.PLAY} 🎵
 				</Text>
 			</Box>
 

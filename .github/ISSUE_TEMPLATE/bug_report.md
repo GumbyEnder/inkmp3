@@ -31,7 +31,7 @@ If applicable, add screenshots to help explain your problem.
 
 - OS: [e.g. Windows 11, macOS 14, Ubuntu 22.04]
 - Node version: [e.g. 18.17.0 - run `node --version`]
-- CLI version: [e.g. 0.0.20 - run `youtube-music-cli --version`]
+- CLI version: [e.g. 0.0.20 - run `INKMP3 --version`]
 - mpv version: [e.g. 0.36.0 - run `mpv --version`]
 
 ## Additional context

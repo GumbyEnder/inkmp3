@@ -69,7 +69,7 @@ function generateBashCompletion(): string {
 	const completionsSubs = COMPLETIONS_SUBCOMMANDS.join(' ');
 	const flags = FLAGS.join(' ');
 
-	return `# youtube-music-cli bash completion
+	return `# INKMP3 bash completion
 # Add to ~/.bashrc or ~/.bash_profile:
 #   source <(ymc completions bash)
 #   # or:
@@ -107,13 +107,13 @@ _ymc_completions() {
     fi
 }
 
-complete -F _ymc_completions ymc youtube-music-cli
+complete -F _ymc_completions ymc INKMP3
 `;
 }
 
 function generateZshCompletion(): string {
-	return `#compdef ymc youtube-music-cli
-# youtube-music-cli zsh completion
+	return `#compdef ymc INKMP3
+# INKMP3 zsh completion
 # Add to your zsh config:
 #   source <(ymc completions zsh)
 #   # or copy to a directory in $fpath:
@@ -202,7 +202,7 @@ function generatePowerShellCompletion(): string {
 	const completionsSubs = COMPLETIONS_SUBCOMMANDS.map(c => `'${c}'`).join(', ');
 	const flags = FLAGS.map(f => `'${f}'`).join(', ');
 
-	return `# youtube-music-cli PowerShell completion
+	return `# INKMP3 PowerShell completion
 # Add to your PowerShell profile ($PROFILE):
 #   ymc completions powershell | Out-File -Append $PROFILE
 #   # or:
@@ -261,7 +261,7 @@ $ymcCompleterBlock = {
     }
 }
 
-Register-ArgumentCompleter -Native -CommandName @('ymc', 'youtube-music-cli') -ScriptBlock $ymcCompleterBlock
+Register-ArgumentCompleter -Native -CommandName @('ymc', 'INKMP3') -ScriptBlock $ymcCompleterBlock
 `;
 }
 
@@ -286,7 +286,7 @@ function generateFishCompletion(): string {
 			`complete -c ymc -n '__fish_seen_subcommand_from completions' -f -a '${sub}'`,
 	).join('\n');
 
-	return `# youtube-music-cli fish completion
+	return `# INKMP3 fish completion
 # Save to: ~/.config/fish/completions/ymc.fish
 #   ymc completions fish > ~/.config/fish/completions/ymc.fish
 
@@ -320,8 +320,8 @@ complete -c ymc -l name -d 'Custom name for imported playlist' -r
 complete -c ymc -l help -s h -d 'Show help'
 complete -c ymc -l version -d 'Show version'
 
-# Also register for youtube-music-cli
-complete -c youtube-music-cli -w ymc
+# Also register for INKMP3
+complete -c INKMP3 -w ymc
 `;
 }
 

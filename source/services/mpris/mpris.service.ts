@@ -55,7 +55,7 @@ export class MprisService {
 			// @ts-ignore
 			const mpris = (await import('mpris-service')) as unknown as MprisModule;
 			this.player = mpris.createPlayer({
-				name: 'youtube-music-cli',
+				name: 'INKMP3',
 				identity: 'YouTube Music CLI',
 				supportedInterfaces: ['player'],
 			});

@@ -1,4 +1,4 @@
-# Copilot Instructions for youtube-music-cli
+# Copilot Instructions for INKMP3
 
 ## Quick Start
 
@@ -90,21 +90,21 @@ source/components/
 ### Interactive Mode
 
 ```bash
-youtube-music-cli                    # Launch interactive UI
-youtube-music-cli --theme=matrix     # Set theme via flag
+INKMP3                    # Launch interactive UI
+INKMP3 --theme=matrix     # Set theme via flag
 ```
 
 ### Subcommands
 
 ```bash
-youtube-music-cli play <track-id>    # Play specific track directly
-youtube-music-cli search <query>     # Search and play
-youtube-music-cli playlist <id>      # Play playlist
-youtube-music-cli pause              # Pause playback
-youtube-music-cli resume             # Resume playback
-youtube-music-cli skip               # Skip to next track
-youtube-music-cli back               # Go to previous track
-youtube-music-cli --headless         # Run without TUI
+INKMP3 play <track-id>    # Play specific track directly
+INKMP3 search <query>     # Search and play
+INKMP3 playlist <id>      # Play playlist
+INKMP3 pause              # Pause playback
+INKMP3 resume             # Resume playback
+INKMP3 skip               # Skip to next track
+INKMP3 back               # Go to previous track
+INKMP3 --headless         # Run without TUI
 ```
 
 ## Critical Implementation Details
