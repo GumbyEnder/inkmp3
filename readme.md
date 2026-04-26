@@ -255,3 +255,42 @@ MIT — same as upstream. Copyright (c) 2026 involvex + contributors.
 **Status:** 🟡 In active development  
 **Last updated:** 2026-04-25  
 **Maintainer:** Frodo (GumbyEnder)
+
+
+---
+
+## 🛑 Project Status — Paused (2026-04-26)
+
+**Current phase:** Repository renamed to `INKMP3` — awaiting Phase 4 feature completion.
+
+**Just completed:**
+- ✅ Phase 1 — MusicService abstraction + YouTube adapter
+- ✅ Phase 2 — LocalMusicService (scanner, metadata, SQLite index)  
+- ✅ Phase 3 — UI unification (BrowseLibrary, source-aware search, type migration)
+
+**Why paused?** Rename complete; resuming requires manual smoke-test of local mode on target machine.
+
+---
+
+### 📋 Resume Prompt — Start Here When Ready
+
+When you're ready to resume development, ask Frodo:
+
+> **"Resume INKMP3 Phase 4 — feature completion"**
+
+Frodo will:
+1. Verify local library scanning works on your machine (sample MP3 library path)
+2. Implement **P4-1 M3U Import UI** (menu item + `/import m3u <file>` CLI binding)
+3. Implement **P4-2 Local Suggestions** (same-folder / same-artist recommendations)
+4. Verify **P4-3 Web Remote** parity for local tracks
+5. Run **P4-4 Smoke Test** — browse, search, play local tracks end-to-end
+6. Move into **Phase 5 Polish** (unit tests, Windows edge cases, README expansion)
+
+**Pre-resume checklist (optional):**
+- [ ] Sample MP3 library accessible at known path (e.g., `~/Music` or `D:\Music`)
+- [ ] `bun install` completes successfully (regenerate `bun.lockb` if needed)
+- [ ] `bun start` launches TUI and BrowseLibrary (`Ctrl+B`) renders
+
+**Phase 4 ticket:** [`.github/PROJECTS.md` → Feature Completion column]  
+**Technical reference:** [`03_Resources/Technical References/LocalMusicService-Implementation.md`](03_Resources/Technical%20References/LocalMusicService-Implementation.md)
+

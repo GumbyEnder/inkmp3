@@ -729,3 +729,18 @@ All card movements on this board must be mirrored in:
 
 This ensures cross-platform visibility (local dev ↔ remote coordination).
 
+
+
+---
+
+## 🛑 PAUSED — Resume When Ready
+
+**Trigger phrase:** "Resume INKMP3 Phase 4 — feature completion"
+
+**Next column:** Feature Completion (Phase 4) is ready to activate.
+- All Phase 1–3 tasks are **Done**
+- Board tracking synced to Obsidian
+- Repository renamed to `INKMP3` (main branch)
+
+Frodo will pick up from the first incomplete Phase 4 card.
+
