@@ -677,6 +677,21 @@ Created https://github.com/GumbyEnder/inkmp3. Pushed main branch from youtube-mu
 ```
 
 ---
+- [x] P1: Unified MusicService interface + Track type
+- [x] P1: YouTubeMusicService adapter
+- [x] P1: MusicServiceFactory + runtime switching
+- [x] P1: Settings toggle + config `musicSource`
+- [x] P2: Fast-glob scanner + mtime/size index
+- [x] P2: SQLite schema + Bun.sqlite integration
+- [x] P2: Implement search/FTS, getTrack/Album/Artist/Playlist
+- [x] P2: Background indexer with debounce
+- [x] P3: BrowseLibrary (two-panel, keyboard nav, playback)
+- [x] P3: VIEW.LIBRARY + ctrl+b keybinding
+- [x] P3: SearchLayout → unified MusicService
+- [x] P3: Source-aware filter labels (Songs→Tracks)
+- [x] P3: Migrate stores/hooks from `videoId` → `id`
+- [x] P3: ImportService.importM3U() stub
+- [x] P3: Update README with local mode docs
 
 ## Milestones
 
