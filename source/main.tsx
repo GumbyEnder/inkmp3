@@ -25,6 +25,7 @@ import {useKeyBinding} from './hooks/useKeyboard.ts';
 import {KEYBINDINGS} from './utils/constants.ts';
 import {ChatProvider} from './stores/chat.store.tsx';
 
+
 function Initializer({flags}: {flags?: Flags}) {
 	const {dispatch} = useNavigation();
 	const {play, dispatch: playerDispatch} = usePlayer();
@@ -36,6 +37,11 @@ function Initializer({flags}: {flags?: Flags}) {
 
 	useKeyBinding(KEYBINDINGS.AI_CHAT, () => {
 		dispatch({category: 'NAVIGATE', view: VIEW.AI_CHAT});
+
+	});
+
+	useKeyBinding(KEYBINDINGS.LIBRARY, () => {
+		dispatch({category: 'NAVIGATE', view: VIEW.LIBRARY});
 	});
 
 	useEffect(() => {

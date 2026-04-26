@@ -69,6 +69,7 @@ export const VIEW = {
 	HOME: 'home',
 	AI_CHAT: 'ai_chat',
 	AI_RECOMMENDATIONS: 'ai_recommendations',
+	LIBRARY: 'library',
 } as const;
 
 // Search types
@@ -124,6 +125,7 @@ export const KEYBINDINGS = {
 	// New Views Shortcuts (Optional, we'll map them later if needed)
 	GENRES: ['shift+m'],
 	NEW_RELEASES: ['shift+n'],
+	LIBRARY: ['ctrl+b'],
 
 	// Navigation
 	UP: ['up', 'k'],

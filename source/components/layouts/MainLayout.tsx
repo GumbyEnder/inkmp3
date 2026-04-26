@@ -37,6 +37,7 @@ import {useTerminalSize} from '../../hooks/useTerminalSize.ts';
 import {getPlayerService} from '../../services/player/player.service.ts';
 import {getConfigService} from '../../services/config/config.service.ts';
 import {usePlayer} from '../../hooks/usePlayer.ts';
+import BrowseLibrary from '../browse/BrowseLibrary.tsx';
 
 function MainLayout() {
 	const {theme} = useTheme();
@@ -244,6 +245,8 @@ function MainLayout() {
 
 			case 'favorites':
 				return <FavoritesLayout key="favorites" />;
+			case 'library':
+				return <BrowseLibrary key="library" />;
 
 			case 'plugins':
 				return <PluginsLayout key="plugins" />;
