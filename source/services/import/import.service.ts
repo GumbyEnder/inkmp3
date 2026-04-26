@@ -6,7 +6,8 @@ import type {
 	SpotifyTrack,
 	YouTubeTrack,
 } from '../../types/import.types.ts';
-import type {Track, Playlist} from '../../types/youtube-music.types.ts';
+import type {Track, Playlist} from '../music/api.ts';
+import {getMusicService} from '../music/index.ts';
 import {getYouTubeImportService} from './youtube-import.service.ts';
 import {getSpotifyImportService} from './spotify.service.ts';
 import {getTrackMatcherService} from './track-matcher.service.ts';
@@ -77,6 +78,50 @@ class ImportService {
 		});
 
 		return playlist.playlistId;
+	}
+
+	/**
+	 * Import M3U playlist file (local filesystem paths)
+	 */
+	async importM3U(filePath: string, onProgress?: ProgressCallback): Promise<ImportResult> {
+		this.currentImport = {
+			source: 'm3u',
+			url: filePath,
+			startTime: Date.now(),
+		};
+		try {
+			const raw = await Bun.file(filePath).text();
+			const lines = raw.split(/\r?\n/);
+			const tracks: Track[] = [];
+			for (const line of lines) {
+				const trimmed = line.trim();
+				if (!trimmed || trimmed.startsWith('#')) continue;
+				// Resolve path relative to M3U file location
+				const absPath = path.isAbsolute(trimmed)
+				? trimmed
+				: path.join(path.dirname(filePath), trimmed);
+				const track = await getMusicService().getTrack(absPath);
+				if (track) tracks.push(track);
+				// Emit progress periodically
+				if (onProgress && tracks.length % 10 === 0) {
+					this.emitProgress({stage: 'reading', processed: tracks.length, total: lines.length});
+				}
+			}
+			const playlistName = path.basename(filePath, path.extname(filePath));
+			const playlistId = this.savePlaylist(playlistName, tracks);
+			return {
+				source: 'm3u',
+				url: filePath,
+				playlistId,
+				tracks,
+				durationMs: Date.now() - this.currentImport.startTime,
+			};
+		} catch (error) {
+			logger.error('ImportService', 'M3U import failed', {filePath, error});
+			throw error;
+		} finally {
+			this.currentImport = null;
+		}
 	}
 
 	/**

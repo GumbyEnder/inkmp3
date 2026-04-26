@@ -640,9 +640,9 @@ function PlayerManager() {
 			state.currentTrack &&
 			state.duration > 0 &&
 			state.progress / state.duration > 0.5 &&
-			scrobbledRef.current !== state.currentTrack.videoId
+			scrobbledRef.current !== state.currentTrack.id
 		) {
-			scrobbledRef.current = state.currentTrack.videoId;
+			scrobbledRef.current = state.currentTrack.id;
 			const config = getConfigService();
 			const scrobblingConfig = config.get('scrobbling');
 			if (scrobblingConfig) {
@@ -659,7 +659,7 @@ function PlayerManager() {
 
 		if (
 			state.currentTrack &&
-			scrobbledRef.current !== state.currentTrack.videoId &&
+			scrobbledRef.current !== state.currentTrack.id &&
 			state.progress < 1
 		) {
 			// New track started — reset so we can scrobble again
@@ -676,14 +676,14 @@ function PlayerManager() {
 			logger.debug('PlayerManager', 'Play/pause effect', {
 				isPlaying: state.isPlaying,
 				currentTrackId,
-				stateVideoId: state.currentTrack?.videoId,
+				stateTrackId: state.currentTrack?.id,
 			});
-			if (!currentTrackId || state.currentTrack?.videoId === currentTrackId) {
+			if (!currentTrackId || state.currentTrack?.id === currentTrackId) {
 				playerService.resume();
 			} else {
 				logger.debug('PlayerManager', 'Skipping resume', {
 					currentTrackId,
-					stateVideoId: state.currentTrack?.videoId,
+					stateTrackId: state.currentTrack?.id,
 				});
 			}
 		} else {
@@ -767,13 +767,13 @@ function PlayerManager() {
 
 		// Already fetched for this track or a fetch is in flight
 		if (
-			fetchedForRef.current === state.currentTrack.videoId ||
+			fetchedForRef.current === state.currentTrack.id ||
 			isFetchingAutoplayRef.current
 		) {
 			return;
 		}
 
-		const trackId = state.currentTrack.videoId;
+		const trackId = state.currentTrack.id;
 		const trackTitle = state.currentTrack.title;
 		isFetchingAutoplayRef.current = true;
 		fetchedForRef.current = trackId;

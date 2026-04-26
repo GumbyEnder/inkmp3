@@ -3,7 +3,7 @@
 import type {Track} from '../services/music/api.ts';
 
 /** Supported import sources */
-export type ImportSource = 'spotify' | 'youtube';
+export type ImportSource = 'spotify' | 'm3u' | 'youtube';
 
 /** Import operation status */
 export type ImportStatus =

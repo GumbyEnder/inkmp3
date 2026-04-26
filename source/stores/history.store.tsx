@@ -67,7 +67,7 @@ export function HistoryProvider({children}: {children: ReactNode}) {
 			return;
 		}
 
-		const videoId = playerState.currentTrack.videoId;
+		const trackId = playerState.currentTrack.id;
 		if (lastLoggedId.current === videoId) {
 			return;
 		}

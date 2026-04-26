@@ -28,12 +28,12 @@ function favoritesReducer(
 		case 'SET_FAVORITES':
 			return action.tracks;
 		case 'ADD_FAVORITE':
-			if (state.some(t => t.videoId === action.track.videoId)) {
+			if (state.some(t => t.id === action.track.id)) {
 				return state;
 			}
 			return [action.track, ...state];
 		case 'REMOVE_FAVORITE':
-			return state.filter(t => t.videoId !== action.trackId);
+			return state.filter(t => t.id !== action.trackId);
 		default:
 			return state;
 	}
@@ -70,15 +70,15 @@ export function FavoritesProvider({children}: {children: ReactNode}) {
 				dispatch({category: 'ADD_FAVORITE', track});
 				logger.debug('FavoritesStore', 'Added favorite', {
 					title: track.title,
-					videoId: track.videoId,
+					id: track.id,
 				});
 			},
 			removeFavorite: (trackId: string) => {
 				dispatch({category: 'REMOVE_FAVORITE', trackId});
-				logger.debug('FavoritesStore', 'Removed favorite', {trackId});
+				logger.debug('FavoritesStore', 'Removed favorite', {trackId: track.id});
 			},
 			toggleFavorite: (track: Track) => {
-				const isFav = state.some(t => t.videoId === track.videoId);
+				const isFav = state.some(t => t.id === track.id);
 				if (isFav) {
 					dispatch({category: 'REMOVE_FAVORITE', trackId: track.videoId});
 					logger.debug('FavoritesStore', 'Removed favorite (toggle)', {
@@ -91,7 +91,7 @@ export function FavoritesProvider({children}: {children: ReactNode}) {
 					});
 				}
 			},
-			isFavorite: (trackId: string) => state.some(t => t.videoId === trackId),
+			isFavorite: (trackId: string) => state.some(t => t.id === trackId),
 		}),
 		[state],
 	);

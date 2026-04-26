@@ -185,7 +185,7 @@ function SearchResults({
 
 			try {
 				const suggestions = await musicService.getSuggestions(
-					selectedTrack.videoId,
+					selectedTrack.id,
 				);
 				collectedTracks.push(...suggestions);
 			} catch (error) {

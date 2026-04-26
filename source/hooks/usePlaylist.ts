@@ -49,7 +49,7 @@ export function usePlaylist() {
 
 			const playlist = playlists[playlistIndex]!;
 			const isDuplicate = playlist.tracks.some(
-				t => t.videoId === track.videoId,
+				t => t.id === track.id,
 			);
 
 			if (isDuplicate && !force) {

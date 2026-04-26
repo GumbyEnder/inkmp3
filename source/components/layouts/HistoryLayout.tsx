@@ -51,7 +51,7 @@ export default function HistoryLayout() {
 						.trim();
 					return (
 						<Box
-							key={`${entry.playedAt}-${entry.track.videoId}`}
+							key={`${entry.playedAt}-${entry.track.id}`}
 							flexDirection="column"
 							paddingY={1}
 							borderStyle="round"

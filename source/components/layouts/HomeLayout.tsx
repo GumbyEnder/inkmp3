@@ -252,7 +252,7 @@ export default function HomeLayout() {
 								const actualIndex =
 									index + quickLinks.length + recentHistory.length;
 								return (
-									<Box key={track.videoId}>
+									<Box key={track.id}>
 										<Text
 											backgroundColor={
 												selectedIndex === actualIndex

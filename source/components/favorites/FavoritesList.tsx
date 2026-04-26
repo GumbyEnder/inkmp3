@@ -49,7 +49,7 @@ export default function FavoritesList() {
 	const handleRemove = useCallback(() => {
 		const track = favorites[selectedIndex];
 		if (track) {
-			removeFavorite(track.videoId);
+			removeFavorite(track.id);
 			// Adjust selection if needed
 			if (selectedIndex >= favorites.length - 1) {
 				setSelectedIndex(Math.max(0, favorites.length - 2));
@@ -114,7 +114,7 @@ export default function FavoritesList() {
 				const artists = track.artists?.map(a => a.name).join(', ') || 'Unknown';
 
 				return (
-					<Box key={track.videoId}>
+					<Box key={track.id}>
 						<Text color={isSelected ? theme.colors.primary : theme.colors.dim}>
 							{isSelected ? '> ' : '  '}
 						</Text>

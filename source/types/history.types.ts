@@ -1,4 +1,4 @@
-import type {Track} from './youtube-music.types.ts';
+import type {Track} from './api.ts';
 
 export interface HistoryEntry {
 	track: Track;

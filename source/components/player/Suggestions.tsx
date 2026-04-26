@@ -17,13 +17,13 @@ export default function Suggestions() {
 	const [selectedIndex, setSelectedIndex] = useState(0);
 
 	useEffect(() => {
-		if (playerState.currentTrack?.videoId) {
-			getSuggestions(playerState.currentTrack.videoId).then(tracks => {
+		if (playerState.currentTrack?.id) {
+			getSuggestions(playerState.currentTrack.id).then(tracks => {
 				setSuggestions(tracks);
 				setSelectedIndex(0);
 			});
 		}
-	}, [playerState.currentTrack?.videoId, getSuggestions]);
+	}, [playerState.currentTrack?.id, getSuggestions]);
 
 	const navigateUp = useCallback(() => {
 		setSelectedIndex(prev => Math.max(0, prev - 1));
@@ -61,7 +61,7 @@ export default function Suggestions() {
 			{suggestions.map((track, index) => {
 				const isSelected = index === selectedIndex;
 				return (
-					<Box key={track.videoId} paddingX={1}>
+					<Box key={track.id} paddingX={1}>
 						<Text
 							backgroundColor={isSelected ? theme.colors.primary : undefined}
 							color={isSelected ? theme.colors.background : theme.colors.text}

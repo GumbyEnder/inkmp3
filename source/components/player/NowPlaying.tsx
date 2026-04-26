@@ -71,7 +71,7 @@ export default function NowPlaying() {
 			{/* Title & Artist on same line if space allows */}
 			<Box>
 				<Text bold color={theme.colors.primary}>
-					{isFavorite(track.videoId) ? `${ICONS.HEART} ` : ''}
+					{isFavorite(track.id) ? `${ICONS.HEART} ` : ''}
 					{track.title}
 				</Text>
 				<Text color={theme.colors.dim}> • </Text>

@@ -74,7 +74,7 @@ export default function TrendingLayout() {
 					const isSelected = index === selectedIndex;
 					const artist = track.artists?.[0]?.name ?? 'Unknown';
 					return (
-						<Box key={track.videoId}>
+						<Box key={track.id}>
 							<Text
 								color={isSelected ? theme.colors.primary : theme.colors.dim}
 							>

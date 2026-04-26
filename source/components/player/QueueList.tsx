@@ -49,10 +49,10 @@ function QueueList() {
 				const title = truncate(track.title, getTruncateLength(40));
 
 				return (
-					<Box key={`${track.videoId}-${index}`}>
+					<Box key={`${track.id}-${index}`}>
 						<Text color={theme.colors.dim}>{index + 1}. </Text>
 						<Text color={isSelected ? theme.colors.primary : theme.colors.text}>
-							{isFavorite(track.videoId) ? `${ICONS.HEART} ` : ''}
+							{isFavorite(track.id) ? `${ICONS.HEART} ` : ''}
 							{title}
 						</Text>
 						<Text color={theme.colors.dim}> • {artists}</Text>
