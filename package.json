@@ -1,17 +1,17 @@
 {
-	"name": "@involvex/youtube-music-cli",
+	"name": "@involvex/INKMP3",
 	"version": "0.0.71",
 	"description": "- A Commandline music player for youtube-music",
 	"repository": {
 		"type": "git",
-		"url": "git+https://github.com/involvex/youtube-music-cli.git"
+		"url": "git+https://github.com/involvex/INKMP3.git"
 	},
 	"funding": "https://github.com/sponsors/involvex",
 	"license": "MIT",
 	"author": "involvex",
 	"type": "module",
 	"bin": {
-		"youtube-music-cli": "dist/source/cli.js",
+		"INKMP3": "dist/source/cli.js",
 		"ymc": "dist/source/cli.js"
 	},
 	"files": [
@@ -25,13 +25,13 @@
 	"sponsor": {
 		"url": "https://github.com/sponsors/involvex"
 	},
-	"homepage": "https://involvex.github.io/youtube-music-cli/",
+	"homepage": "https://involvex.github.io/INKMP3/",
 	"keywords": [
 		"cli",
 		"youtube",
 		"youtube-music",
 		"youtube-cli",
-		"youtube-music-cli",
+		"INKMP3",
 		"ink",
 		"cli-music"
 	],

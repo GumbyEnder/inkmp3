@@ -671,7 +671,7 @@ Body:
 **Completed:** 2026-04-25  
 
 **Summary:**
-Created https://github.com/GumbyEnder/inkmp3. Pushed main branch from youtube-music-cli fork. Ready for development.
+Created https://github.com/GumbyEnder/inkmp3. Pushed main branch from INKMP3 fork. Ready for development.
 
 [Milestone: Research]
 ```
@@ -711,9 +711,9 @@ Created https://github.com/GumbyEnder/inkmp3. Pushed main branch from youtube-mu
 | Item | Link |
 |------|------|
 | **GitHub Repo** | https://github.com/GumbyEnder/inkmp3 |
-| **Original Repo** | https://github.com/involvex/youtube-music-cli |
+| **Original Repo** | https://github.com/involvex/INKMP3 |
 | **Obsidian Vault** | ~/vaults/InkMP3/ |
-| **Local Code** | /mnt/nas/github_repos/youtube-music-cli/ |
+| **Local Code** | /mnt/nas/github_repos/INKMP3/ |
 | **Project Hub** | `01_Projects/InkMP3.md` (Obsidian) |
 | **ADR-001** | `Architecture Decision Records/ADR-001-local-music-service.md` |
 | **Tech Refs** | `03_Resources/Technical References/Libraries.md` |

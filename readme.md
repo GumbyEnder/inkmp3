@@ -1,6 +1,6 @@
 # 🎵 InkMP3 — TUI MP3 Player
 
-> **A fork of [youtube-music-cli](https://github.com/involvex/youtube-music-cli) transforming it into a dual-source music player — YouTube streaming **and** local MP3 library support.**
+> **A fork of [INKMP3](https://github.com/involvex/INKMP3) transforming it into a dual-source music player — YouTube streaming **and** local MP3 library support.**
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 [![Progress: 13%](https://img.shields.io/badge/Phase-Planning-orange)](docs/roadmap.md)
@@ -10,7 +10,7 @@
 
 ## 🎯 Mission
 
-Transform the excellent `youtube-music-cli` TUI into **InkMP3** — a traditional, keyboard-driven MP3 player that plays local files from disk **and** streams YouTube Music, using the same polished interface.
+Transform the excellent `INKMP3` TUI into **InkMP3** — a traditional, keyboard-driven MP3 player that plays local files from disk **and** streams YouTube Music, using the same polished interface.
 
 **First milestone:** Windows + Linux + macOS cross-platform compatibility with local MP3 playback.
 
@@ -20,7 +20,7 @@ Transform the excellent `youtube-music-cli` TUI into **InkMP3** — a traditiona
 
 ## ✨ Why This Exists
 
-The original `youtube-music-cli` is a beautiful TUI for YouTube Music. But:
+The original `INKMP3` is a beautiful TUI for YouTube Music. But:
 
 - 🔇 **No offline playback** — you need internet to listen
 - 📁 **Local files unsupported** — your MP3 collection can't be played
@@ -36,7 +36,7 @@ The original `youtube-music-cli` is a beautiful TUI for YouTube Music. But:
 
 ## 📦 What's Different
 
-| Feature | youtube-music-cli | InkMP3 |
+| Feature | INKMP3 | InkMP3 |
 |---------|------------------|--------|
 | **Source** | YouTube only | YouTube **or** Local files |
 | **MP3 playback** | ❌ No | ✅ Yes (any format mpv supports) |
@@ -64,17 +64,17 @@ You need **mpv** installed (plays audio). Optional: `yt-dlp` if you use YouTube 
 
 ```bash
 # Via npm (recommended)
-npm install -g @involvex/youtube-music-cli
+npm install -g @involvex/INKMP3
 
 # Or via Bun
-bun install -g @involvex/youtube-music-cli
+bun install -g @involvex/INKMP3
 
 # Run it
 inkmp3          # TUI mode
 inkmp3 play song-id    # Headless play
 ```
 
-**Note:** The package name remains `@involvex/youtube-music-cli` for backward compatibility. The binary is `inkmp3` and `youtube-music-cli` (both point to same binary).
+**Note:** The package name remains `@involvex/INKMP3` for backward compatibility. The binary is `inkmp3` and `INKMP3` (both point to same binary).
 
 ---
 
@@ -99,7 +99,7 @@ Edit `~/.inkmp3/config.json` (or via Settings UI):
 
 ### YouTube Mode (Default)
 
-No config needed. Just run and search. Your existing `~/.youtube-music-cli/config.json` is used automatically on first launch (migrated).
+No config needed. Just run and search. Your existing `~/.INKMP3/config.json` is used automatically on first launch (migrated).
 
 ---
 
@@ -245,7 +245,7 @@ MIT — same as upstream. Copyright (c) 2026 involvex + contributors.
 
 ## 🙏 Acknowledgments
 
-- **involvex** — Original author of `youtube-music-cli`, amazing TUI foundation
+- **involvex** — Original author of `INKMP3`, amazing TUI foundation
 - **Bun** — Blazing-fast runtime + built-in SQLite
 - **Ink** — React for CLIs
 - **mpv** — The best media player, period

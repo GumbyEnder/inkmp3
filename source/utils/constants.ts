@@ -15,7 +15,7 @@ function loadAppVersion(): string {
 			const pkg = JSON.parse(content) as {version?: string; name?: string};
 			if (
 				typeof pkg.version === 'string' &&
-				pkg.name?.includes('youtube-music-cli')
+				pkg.name?.includes('INKMP3')
 			) {
 				return pkg.version;
 			}
@@ -32,14 +32,14 @@ function loadAppVersion(): string {
 }
 
 // Application constants
-export const APP_NAME = '@involvex/youtube-music-cli';
+export const APP_NAME = '@involvex/INKMP3';
 export const APP_VERSION = loadAppVersion();
 
 // Config directory
 export const CONFIG_DIR =
 	process.platform === 'win32'
-		? `${process.env['USERPROFILE']}\\.youtube-music-cli`
-		: `${process.env['HOME']}/.youtube-music-cli`;
+		? `${process.env['USERPROFILE']}\\.INKMP3`
+		: `${process.env['HOME']}/.INKMP3`;
 
 export const CONFIG_FILE = `${CONFIG_DIR}/config.json`;
 
