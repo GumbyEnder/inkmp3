@@ -107,16 +107,16 @@ export class LocalMusicService implements MusicService {
 
 		this.db.run('PRAGMA foreign_keys = ON');
 
-		this.db.run(\`
+		this.db.run(`
 			CREATE TABLE IF NOT EXISTS files (
 				id INTEGER PRIMARY KEY AUTOINCREMENT,
 				path TEXT NOT NULL UNIQUE,
 				mtime REAL NOT NULL,
 				size INTEGER NOT NULL
 			)
-		\`);
+		`);
 
-		this.db.run(\`
+		this.db.run(`
 			CREATE TABLE IF NOT EXISTS metadata (
 				id INTEGER PRIMARY KEY AUTOINCREMENT,
 				fileId INTEGER NOT NULL UNIQUE,
@@ -129,7 +129,7 @@ export class LocalMusicService implements MusicService {
 				genre TEXT,
 				FOREIGN KEY (fileId) REFERENCES files(id) ON DELETE CASCADE
 			)
-		\`);
+		`);
 
 		this.db.run('CREATE INDEX IF NOT EXISTS idx_metadata_title ON metadata(title)');
 		this.db.run('CREATE INDEX IF NOT EXISTS idx_metadata_album ON metadata(album)');
@@ -188,9 +188,9 @@ export class LocalMusicService implements MusicService {
 							const mtimeMs = stats.mtimeMs;
 							const size = stats.size;
 
-							const existing = this.db!.query\`
+							const existing = this.db!.query`
 								SELECT id, mtime, size FROM files WHERE path = ${filePath}
-							\`.first();
+							`.first();
 
 							if (existing && existing.mtime === mtimeMs && existing.size === size) {
 								visitedFileIds.push(existing.id);
@@ -238,19 +238,19 @@ export class LocalMusicService implements MusicService {
 
 							let fileId: number;
 							if (existing) {
-								this.db!.run\`
+								this.db!.run`
 									UPDATE files SET mtime = ${mtimeMs}, size = ${size} WHERE id = ${existing.id}
-								\`;
+								`;
 								fileId = existing.id;
 							} else {
-								const res = this.db!.run\`
+								const res = this.db!.run`
 									INSERT INTO files (path, mtime, size) VALUES (${filePath}, ${mtimeMs}, ${size})
-								\`;
+								`;
 								fileId = res.lastInsertRowid as number;
 							}
 							visitedFileIds.push(fileId);
 
-							this.db!.run\`
+							this.db!.run`
 								INSERT OR REPLACE INTO metadata
 								(fileId, title, artists, album, duration, trackNumber, year, genre)
 								VALUES (
@@ -263,9 +263,9 @@ export class LocalMusicService implements MusicService {
 									${year ?? null},
 									${JSON.stringify(genre)}
 								)
-							\`;
+							`;
 						} catch (err) {
-							console.error(\`Error indexing file \${filePath}:\`, err);
+							console.error(`Error indexing file \${filePath}:`, err);
 						}
 					}),
 				);
@@ -274,7 +274,7 @@ export class LocalMusicService implements MusicService {
 			if (visitedFileIds.length === 0) {
 				this.db!.run('DELETE FROM files');
 			} else {
-				this.db!.run\`DELETE FROM files WHERE id NOT IN ${visitedFileIds}\`;
+				this.db!.run`DELETE FROM files WHERE id NOT IN ${visitedFileIds}`;
 			}
 
 			this.db.run('COMMIT');
@@ -314,15 +314,15 @@ export class LocalMusicService implements MusicService {
 		if (!this.db) {
 			throw new Error('LocalMusicService not initialized — call initialize() first');
 		}
-		const like = \`%\${query}%\`;
+		const like = `%\${query}%`;
 		const limit = options?.limit ?? 50;
-		const rows = this.db!.query\`
+		const rows = this.db!.query`
 			SELECT m.*, f.path
 			FROM metadata m
 			JOIN files f ON m.fileId = f.id
 			WHERE m.title LIKE \${like} OR m.album LIKE \${like}
 			LIMIT \${limit}
-		\`.all();
+		`.all();
 
 		const results: SearchResult[] = rows.map(row => ({
 			type: 'track',
@@ -336,12 +336,12 @@ export class LocalMusicService implements MusicService {
 		if (!this.db) {
 			throw new Error('LocalMusicService not initialized — call initialize() first');
 		}
-		const row = this.db!.query\`
+		const row = this.db!.query`
 			SELECT m.*, f.path
 			FROM files f
 			JOIN metadata m ON f.id = m.fileId
 			WHERE f.path = \${id}
-		\`.first();
+		`.first();
 		if (!row) return null;
 		return this.rowToTrack(row);
 	}
@@ -351,13 +351,13 @@ export class LocalMusicService implements MusicService {
 			throw new Error('LocalMusicService not initialized — call initialize() first');
 		}
 		const albumDir = albumId.replace(/[\\/]+$/, '');
-		const rows = this.db!.query\`
+		const rows = this.db!.query`
 			SELECT m.*, f.path
 			FROM files f
 			JOIN metadata m ON f.id = m.fileId
 			WHERE f.path LIKE \${albumDir + '/%'}
 			ORDER BY m.trackNumber ASC
-		\`.all();
+		`.all();
 
 		if (rows.length === 0) return null;
 
@@ -377,9 +377,9 @@ export class LocalMusicService implements MusicService {
 		if (!this.db) {
 			throw new Error('LocalMusicService not initialized — call initialize() first');
 		}
-		const exists = this.db!.query\`
+		const exists = this.db!.query`
 			SELECT 1 FROM metadata WHERE artists LIKE \${'%' + artistId + '%'} LIMIT 1
-		\`.first();
+		`.first();
 		if (!exists) return null;
 		return { id: artistId, name: artistId };
 	}
@@ -392,37 +392,89 @@ export class LocalMusicService implements MusicService {
 		if (!this.db) {
 			throw new Error('LocalMusicService not initialized — call initialize() first');
 		}
+
+		// Get the track to access its metadata
 		const track = await this.getTrack(trackId);
-		if (!track || track.artists.length === 0) return [];
+		if (!track) return [];
 
 		const suggestions = new Map<string, UnifiedTrack>();
-		for (const artist of track.artists) {
-			const artistName = artist.name;
-			const like = \`%\${artistName}%\`;
-			const rows = this.db!.query\`
+		let totalAdded = 0;
+
+		// ── 1. Same-artist suggestions (existing behavior) ─────────────────────
+		if (track.artists.length > 0) {
+			for (const artist of track.artists) {
+				if (totalAdded >= limit) break;
+				const artistName = artist.name;
+				const like = `%\${artistName}%`;
+				const rows = this.db!.query`
+					SELECT m.*, f.path
+					FROM metadata m
+					JOIN files f ON m.fileId = f.id
+					WHERE f.path != \${trackId} AND m.artists LIKE \${like}
+				`.all();
+
+				for (const row of rows) {
+					if (totalAdded >= limit) break;
+					const t = this.rowToTrack(row);
+					if (!suggestions.has(t.id)) {
+						suggestions.set(t.id, t);
+						totalAdded++;
+					}
+				}
+			}
+		}
+
+		// ── 2. Same-album suggestions (if track has album) ─────────────────────
+		if (track.album?.name.length > 0) {
+			const like = `%\${track.album.name}%`;
+			const rows = this.db!.query`
 				SELECT m.*, f.path
 				FROM metadata m
 				JOIN files f ON m.fileId = f.id
-				WHERE f.path != \${trackId} AND m.artists LIKE \${like}
-				LIMIT \${limit}
-			\`.all();
+				WHERE f.path != \${trackId} AND m.album LIKE \${like}
+	`.all();
 
 			for (const row of rows) {
+				if (totalAdded >= limit) break;
 				const t = this.rowToTrack(row);
 				if (!suggestions.has(t.id)) {
 					suggestions.set(t.id, t);
-					if (suggestions.size >= limit) break;
+					totalAdded++;
 				}
 			}
-			if (suggestions.size >= limit) break;
 		}
+
+		// ── 3. Same-folder suggestions (tracks in same directory) ───────────────
+		if (track.filePath && track.filePath.length > 0) {
+			const folder = path.dirname(track.filePath);
+			if (folder.length > 0) {
+				// Get all tracks in the same album folder, sorted by filename proximity
+				const like = `%\${path.basename(folder)}%`;
+				const rows = this.db!.query`
+					SELECT m.*, f.path
+					FROM metadata m
+					JOIN files f ON m.fileId = f.id
+					WHERE f.path LIKE \${folder + '/%'} AND f.path != \${trackId}
+			`.all();
+
+				for (const row of rows) {
+					if (totalAdded >= limit) break;
+					const t = this.rowToTrack(row);
+					if (!suggestions.has(t.id)) {
+						suggestions.set(t.id, t);
+						totalAdded++;
+					}
+				}
+			}
+		}
+
 		return Array.from(suggestions.values());
 	}
 
 	async getStreamUrl(track: UnifiedTrack): Promise<string> {
 		if (track.source !== 'local') {
 			throw new Error(
-				\`LocalMusicService.getStreamUrl: expected source='local', got '\${track.source}'\`,
+				`LocalMusicService.getStreamUrl: expected source='local', got '\${track.source}'`,
 			);
 		}
 		const filePath = track.filePath ?? track.id;
@@ -432,7 +484,7 @@ export class LocalMusicService implements MusicService {
 		try {
 			await access(filePath);
 			} catch {
-				throw new Error(\`File not found: \${filePath}\`);
+				throw new Error(`File not found: \${filePath}`);
 			}
 		return filePath;
 	}

@@ -118,7 +118,7 @@ describe('LocalMusicService', () => {
 			// Query DB to confirm files indexed
 			const getCount = () => {
 				const db = (service as any).db;
-				const row = db.query\`SELECT COUNT(*) as c FROM metadata\`.first();
+				const row = db.query`SELECT COUNT(*) as c FROM metadata`.first();
 				return row?.c ?? 0;
 			};
 
@@ -134,12 +134,12 @@ describe('LocalMusicService', () => {
 
 			// Get initial count
 			const db = (service as any).db;
-			const firstCount = db.query\`SELECT COUNT(*) as c FROM metadata\`.first().c;
+			const firstCount = db.query`SELECT COUNT(*) as c FROM metadata`.first().c;
 			expect(firstCount).toBe(1);
 
 			// No-op re-scan (same files, same mtime)
 			await new Promise(r => setTimeout(r, 2500));
-			const secondCount = db.query\`SELECT COUNT(*) as c FROM metadata\`.first().c;
+			const secondCount = db.query`SELECT COUNT(*) as c FROM metadata`.first().c;
 			expect(secondCount).toBe(1);
 		});
 	});

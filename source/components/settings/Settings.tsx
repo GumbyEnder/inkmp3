@@ -1,16 +1,20 @@
 // Settings component
-import {useState} from 'react';
+import {useState, useCallback, useEffect} from 'react';
 import {Box, Text} from 'ink';
 import TextInput from 'ink-text-input';
 import {useTheme} from '../../hooks/useTheme.ts';
 import {useNavigation} from '../../hooks/useNavigation.ts';
 import {getConfigService} from '../../services/config/config.service.ts';
 import {getMusicServiceFactory} from '../../services/music/index.ts';
+import {getImportService} from '../../services/import/import.service.ts';
+import ImportProgressComponent from '../import/ImportProgress.tsx';
+import type {ImportProgress, ImportResult} from '../../types/import.types.ts';
 import {useKeyBinding} from '../../hooks/useKeyboard.ts';
 import {KEYBINDINGS, VIEW} from '../../utils/constants.ts';
 import {useSleepTimer} from '../../hooks/useSleepTimer.ts';
 import {formatTime} from '../../utils/format.ts';
 import {useKeyboardBlocker} from '../../hooks/useKeyboardBlocker.tsx';
+import {getNotificationService} from '../../services/notification/notification.service.ts';
 import type {
 	DownloadFormat,
 	EqualizerPreset,
@@ -48,6 +52,7 @@ const SETTINGS_ITEMS = [
 	'Download Format',
 	'Sleep Timer',
 	'Import Playlists',
+	'Import M3U Playlist',
 	'Export Playlists',
 	'Custom Keybindings',
 	'Manage Plugins',
@@ -295,17 +300,20 @@ export default function Settings() {
 			setIsEditingDownloadDirectory(true);
 		} else if (selectedIndex === 15) {
 			cycleDownloadFormat();
-		} else if (selectedIndex === 16) {
-			cycleSleepTimer();
-		} else if (selectedIndex === 17) {
-			dispatch({category: 'NAVIGATE', view: VIEW.EXPORT_PLAYLISTS});
-		} else if (selectedIndex === 18) {
-			dispatch({category: 'NAVIGATE', view: VIEW.KEYBINDINGS});
-		} else if (selectedIndex === 19) {
-			dispatch({category: 'NAVIGATE', view: VIEW.PLUGINS});
-		} else if (selectedIndex === 20) {
-			cycleMusicSource();
-		}
+	} else if (selectedIndex === 16) {
+		cycleSleepTimer();
+	} else if (selectedIndex === 17) {
+		dispatch({category: 'NAVIGATE', view: VIEW.EXPORT_PLAYLISTS});
+	} else if (selectedIndex === 18) {
+		// New: Import M3U Playlist
+		dispatch({category: 'NAVIGATE', view: VIEW.IMPORT});
+	} else if (selectedIndex === 19) {
+		dispatch({category: 'NAVIGATE', view: VIEW.KEYBINDINGS});
+	} else if (selectedIndex === 20) {
+		dispatch({category: 'NAVIGATE', view: VIEW.PLUGINS});
+	} else if (selectedIndex === 21) {
+		cycleMusicSource();
+	}
 	};
 
 	useKeyBinding(KEYBINDINGS.UP, navigateUp);
@@ -627,79 +635,95 @@ export default function Settings() {
 				</Text>
 			</Box>
 
-			{/* Import Playlists */}
-			<Box paddingX={1}>
-				<Text
-					backgroundColor={
-						selectedIndex === 16 ? theme.colors.primary : undefined
-					}
-					color={
-						selectedIndex === 16 ? theme.colors.background : theme.colors.text
-					}
-					bold={selectedIndex === 16}
-				>
-					Import Playlists →
-				</Text>
-			</Box>
+		{/* Import Playlists */}
+		<Box paddingX={1}>
+			<Text
+				backgroundColor={
+					selectedIndex === 16 ? theme.colors.primary : undefined
+				}
+				color={
+					selectedIndex === 16 ? theme.colors.background : theme.colors.text
+				}
+				bold={selectedIndex === 16}
+			>
+				Import Playlists →
+			</Text>
+		</Box>
 
-			{/* Export Playlists */}
-			<Box paddingX={1}>
-				<Text
-					backgroundColor={
-						selectedIndex === 17 ? theme.colors.primary : undefined
-					}
-					color={
-						selectedIndex === 17 ? theme.colors.background : theme.colors.text
-					}
-					bold={selectedIndex === 17}
-				>
-					Export Playlists →
-				</Text>
-			</Box>
+		{/* Import M3U Playlist */}
+		<Box paddingX={1}>
+			<Text
+				backgroundColor={
+					selectedIndex === 17 ? theme.colors.primary : undefined
+				}
+				color={
+					selectedIndex === 17 ? theme.colors.background : theme.colors.text
+				}
+				bold={selectedIndex === 17}
+			>
+				Import M3U Playlist →
+			</Text>
+		</Box>
 
-			{/* Custom Keybindings */}
-			<Box paddingX={1}>
-				<Text
-					backgroundColor={
-						selectedIndex === 18 ? theme.colors.primary : undefined
-					}
-					color={
-						selectedIndex === 18 ? theme.colors.background : theme.colors.text
-					}
-					bold={selectedIndex === 18}
-				>
-					Custom Keybindings →
-				</Text>
-			</Box>
+		{/* Export Playlists */}
+		<Box paddingX={1}>
+			<Text
+				backgroundColor={
+					selectedIndex === 18 ? theme.colors.primary : undefined
+				}
+				color={
+					selectedIndex === 18 ? theme.colors.background : theme.colors.text
+				}
+				bold={selectedIndex === 18}
+			>
+				Export Playlists →
+			</Text>
+		</Box>
 
-			{/* Manage Plugins */}
-			<Box paddingX={1}>
-				<Text
-					backgroundColor={
-						selectedIndex === 19 ? theme.colors.primary : undefined
-					}
-					color={
-						selectedIndex === 19 ? theme.colors.background : theme.colors.text
-					}
-					bold={selectedIndex === 19}
-				>
-					Manage Plugins
-				</Text>
-			</Box>
-			{/* Music Source */}
-			<Box paddingX={1}>
-				<Text
-					backgroundColor={
-						selectedIndex === 20 ? theme.colors.primary : undefined
-					}
-					color={
-						selectedIndex === 20 ? theme.colors.background : theme.colors.text
-					}
-					bold={selectedIndex === 20}
-				>
-					Music Source: {musicSource.toUpperCase()}
-				</Text>
-			</Box>
+		{/* Custom Keybindings */}
+		<Box paddingX={1}>
+			<Text
+				backgroundColor={
+					selectedIndex === 19 ? theme.colors.primary : undefined
+				}
+				color={
+					selectedIndex === 19 ? theme.colors.background : theme.colors.text
+				}
+				bold={selectedIndex === 19}
+			>
+				Custom Keybindings
+			</Text>
+		</Box>
+
+		{/* Manage Plugins */}
+		<Box paddingX={1}>
+			<Text
+				backgroundColor={
+					selectedIndex === 20 ? theme.colors.primary : undefined
+				}
+				color={
+					selectedIndex === 20 ? theme.colors.background : theme.colors.text
+				}
+				bold={selectedIndex === 20}
+			>
+				Manage Plugins
+			</Text>
+		</Box>
+
+		{/* Music Source */}
+		<Box paddingX={1}>
+			<Text
+				backgroundColor={
+					selectedIndex === 21 ? theme.colors.primary : undefined
+				}
+				color={
+					selectedIndex === 21 ? theme.colors.background : theme.colors.text
+				}
+				bold={selectedIndex === 21}
+			>
+				Music Source: {musicSource.toUpperCase()}
+			</Text>
+		</Box>
 
 
 			{/* Info */}

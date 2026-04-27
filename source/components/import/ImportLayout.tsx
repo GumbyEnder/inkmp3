@@ -6,13 +6,15 @@ import {useTheme} from '../../hooks/useTheme.ts';
 import {useNavigation} from '../../hooks/useNavigation.ts';
 import {useKeyBinding} from '../../hooks/useKeyboard.ts';
 import {KEYBINDINGS} from '../../utils/constants.ts';
-import {getImportService} from '../../services/import/import.service.ts';
-import type {ImportSource, ImportProgress} from '../../types/import.types.ts';
-import ImportProgressComponent from './ImportProgress.tsx';
+	import {getImportService} from '../../services/import/import.service.ts';
+	import type {ImportProgress} from '../../types/import.types.ts';
+	import ImportProgressComponent from './ImportProgress.tsx';
+	import path from 'node:path';
 
-const SOURCES: Array<{key: ImportSource; label: string}> = [
+const SOURCES: Array<{key: 'spotify' | 'youtube' | 'm3u'; label: string}> = [
 	{key: 'spotify', label: 'Spotify'},
 	{key: 'youtube', label: 'YouTube'},
+	{key: 'm3u', label: 'M3U Playlist'},
 ];
 
 export default function ImportLayout() {
@@ -54,9 +56,14 @@ export default function ImportLayout() {
 
 	const submitUrl = useCallback(() => {
 		if (url.trim()) {
-			setStep('name');
+			// M3U source skips the name step and goes straight to importing
+			if (SOURCES[selectedSource]!.key === 'm3u') {
+				startImport();
+			} else {
+				setStep('name');
+			}
 		}
-	}, [url]);
+	}, [url, selectedSource, startImport]);
 
 	const startImport = useCallback(async () => {
 		setStep('importing');
@@ -68,11 +75,25 @@ export default function ImportLayout() {
 			});
 
 			const source = SOURCES[selectedSource]!.key;
-			const importResult = await importService.importPlaylist(
-				source,
-				url,
-				customName || undefined,
-			);
+
+			let importResult;
+			if (source === 'm3u') {
+				// M3U: direct file import
+				importResult = await importService.importM3U(url, progress => {
+					// Forward progress to the emit mechanism
+					// ImportService already emits via onProgress, but we also need to forward
+					// any progress setProgress here for duplicate handling? Actually importService calls emitProgress which subscribers receive via onProgress callback.
+					// We already set up unsubscribe above, so subsequent progress will call setProgress.
+					// No extra forwarding needed.
+				});
+			} else {
+				// Spotify/YouTube import
+				importResult = await importService.importPlaylist(
+					source,
+					url,
+					customName || undefined,
+				);
+			}
 
 			unsubscribe();
 
@@ -178,29 +199,37 @@ export default function ImportLayout() {
 				</Box>
 			)}
 
-			{/* Step: URL input */}
-			{step === 'url' && (
-				<Box flexDirection="column" gap={1}>
-					<Text color={theme.colors.dim}>
-						Enter {SOURCES[selectedSource]!.label} playlist URL or ID:
-					</Text>
-					<Box paddingX={1}>
-						<TextInput
-							value={url}
-							onChange={setUrl}
-							onSubmit={submitUrl}
-							placeholder="Paste URL or ID here..."
-							focus
-						/>
-					</Box>
-					<Text color={theme.colors.dim}>
-						Examples:{' '}
-						{SOURCES[selectedSource]!.key === 'spotify'
-							? 'https://open.spotify.com/playlist/...'
-							: 'https://www.youtube.com/playlist?list=...'}
-					</Text>
+		{/* Step: URL input */}
+		{step === 'url' && (
+			<Box flexDirection="column" gap={1}>
+				<Text color={theme.colors.dim}>
+					{SOURCES[selectedSource]!.key === 'm3u'
+						? 'Enter M3U playlist file path:'
+						: `Enter ${SOURCES[selectedSource]!.label} playlist URL or ID:`}
+				</Text>
+				<Box paddingX={1}>
+					<TextInput
+						value={url}
+						onChange={setUrl}
+						onSubmit={submitUrl}
+						placeholder={
+							SOURCES[selectedSource]!.key === 'm3u'
+								? '/path/to/playlist.m3u'
+								: 'Paste URL or ID here...'
+						}
+						focus
+					/>
 				</Box>
-			)}
+				<Text color={theme.colors.dim}>
+					Examples:{' '}
+					{SOURCES[selectedSource]!.key === 'spotify'
+						? 'https://open.spotify.com/playlist/...'
+						: SOURCES[selectedSource]!.key === 'm3u'
+						? '~/Music/playlist.m3u'
+						: 'https://www.youtube.com/playlist?list=...'}
+				</Text>
+			</Box>
+		)}
 
 			{/* Step: Custom name (optional) */}
 			{step === 'name' && (
