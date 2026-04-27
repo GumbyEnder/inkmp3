@@ -322,16 +322,13 @@ export interface MusicServiceFactory {
 	setSource(source: MusicSource): void;
 }
 
+// ─── MusicServiceFactory Singleton (delegates to factory.ts) ─────────────
+
 // Singleton instance (one per runtime)
 let musicServiceFactoryInstance: MusicServiceFactory | null = null;
 
-/**
- * Get the global MusicServiceFactory singleton.
- * Creates on first call.
- */
 export function getMusicServiceFactory(): MusicServiceFactory {
 	if (!musicServiceFactoryInstance) {
-		// This will be replaced by actual factory implementation in P1-4
 		throw new Error(
 			'MusicServiceFactory not initialized — call initializeMusicServiceFactory() first',
 		);
@@ -339,26 +336,18 @@ export function getMusicServiceFactory(): MusicServiceFactory {
 	return musicServiceFactoryInstance;
 }
 
-/**
- * Initialize the global factory with the configured source.
- * Called once at app startup from main entry point.
- *
- * @param initialSource Default music source (reads from config if null)
- */
 export async function initializeMusicServiceFactory(
 	initialSource?: MusicSource,
 ): Promise<void> {
-	if (musicServiceFactoryInstance) {
-		return; // Already initialized
+	if (musicServiceFactoryInstance) return;
+	const {getMusicServiceFactory: getFactoryFromModule} = await import('./factory.ts');
+	const impl = getFactoryFromModule();
+	musicServiceFactoryInstance = impl;
+	if (initialSource && initialSource !== impl.getSource()) {
+		await impl.setSource(initialSource);
 	}
-	// Placeholder — real implementation in P1-4
-	throw new Error('Not implemented — Phase 1 Task P1-4');
 }
 
-/**
- * Convenience: get the currently active MusicService directly.
- * Equivalent to `getMusicServiceFactory().getCurrentService()`.
- */
 export function getMusicService(): MusicService {
 	return getMusicServiceFactory().getCurrentService();
 }

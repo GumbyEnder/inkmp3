@@ -126,18 +126,5 @@ export function getMusicServiceFactory(): MusicServiceFactoryImpl {
 	return factoryInstance;
 }
 
-/**
- * Initialize the global MusicServiceFactory.
- * Idempotent — safe to call multiple times.
- *
- * @param source Optional source override; falls back to config/default
- */
-export async function initializeMusicServiceFactory(
-	source?: MusicSource,
-): Promise<void> {
-	const factory = getMusicServiceFactory();
-	await factory.initialize(source);
-}
-
-// Re-export convenience
-export {getMusicService} from './api.ts';
+// Re-export from api.ts
+export {getMusicService, initializeMusicServiceFactory} from './api.ts';

@@ -18,7 +18,7 @@ import {getConfigService} from './services/config/config.service.ts';
 import {getPlayerService} from './services/player/player.service.ts';
 import {APP_VERSION} from './utils/constants.ts';
 import {ensurePlaybackDependencies} from './services/player/dependency-check.service.ts';
-import {getMusicService} from './services/music/factory.ts';
+import {getMusicService, initializeMusicServiceFactory} from './services/music/factory.ts';
 import type {Track} from './services/music/api.ts';
 
 const isStandalone =
@@ -588,6 +588,9 @@ if (command === 'plugins') {
 					}
 				}
 			}
+
+			// Initialize music service factory before rendering
+			await initializeMusicServiceFactory();
 
 			// Render the app
 			render(<App flags={flags} />);

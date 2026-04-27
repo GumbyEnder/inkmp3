@@ -11,10 +11,11 @@ import {KeyboardManager} from './hooks/useKeyboard.ts';
 import {KeyboardBlockProvider} from './hooks/useKeyboardBlocker.tsx';
 import {Box, Text} from 'ink';
 import type {Flags} from './types/cli.types.ts';
-import {useEffect} from 'react';
+import {useEffect, useState} from 'react';
 import {useNavigation} from './hooks/useNavigation.ts';
 import {usePlayer} from './hooks/usePlayer.ts';
 import {useYouTubeMusic} from './hooks/useYouTubeMusic.ts';
+import {initializeMusicServiceFactory} from './services/music/factory.ts';
 import {VIEW} from './utils/constants.ts';
 import {getConfigService} from './services/config/config.service.ts';
 import {getNotificationService} from './services/notification/notification.service.ts';
@@ -30,6 +31,12 @@ function Initializer({flags}: {flags?: Flags}) {
 	const {dispatch} = useNavigation();
 	const {play, dispatch: playerDispatch} = usePlayer();
 	const {getTrack, getPlaylist} = useYouTubeMusic();
+	const [ready, setReady] = useState(false);
+
+	// Initialize MusicServiceFactory before anything tries to use music services
+	useEffect(() => {
+		void initializeMusicServiceFactory().then(() => setReady(true));
+	}, []);
 
 	useKeyBinding(KEYBINDINGS.FAVORITES_VIEW, () => {
 		dispatch({category: 'NAVIGATE', view: VIEW.FAVORITES});

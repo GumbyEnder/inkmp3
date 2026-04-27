@@ -162,7 +162,6 @@ function SearchLayout() {
 				isLoading={isLoading}
 				error={error}
 				isTyping={isTyping}
-				onSelect={...} // unchanged
 			/>
 		</Box>
 	);
