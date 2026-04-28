@@ -23,17 +23,17 @@ function getTrackDisplayInfo(track: {title?: string; artists?: Array<{name: stri
   const parts: React.ReactNode[] = [];
 
   // Title (always)
-  parts.push(<Text color="cyan" key="title" bold>{track.title || '(unknown)'}</Text>);
+  parts.push(<Text color="cyan" key="title" bold truncate="middle">{track.title || '(unknown)'}</Text>);
 
   // Artist(s)
   if (track.artists && track.artists.length > 0) {
     const artistStr = track.artists.map(a => a.name).join(', ');
-    parts.push(<Text key="artist" color="gray"> • {truncate(artistStr, 30)}</Text>);
+    parts.push(<Text key="artist" color="gray" truncate="middle"> • {artistStr}</Text>);
   }
 
   // Album
   if (track.album?.name) {
-    parts.push(<Text key="album" color="gray"> • {truncate(track.album.name, 40)}</Text>);
+    parts.push(<Text key="album" color="gray" truncate="middle"> • {track.album.name}</Text>);
   }
 
   return <>{parts}</>;
