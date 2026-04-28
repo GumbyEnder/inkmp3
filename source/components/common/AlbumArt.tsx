@@ -30,33 +30,33 @@ export function AlbumArt({ coverUrl }: Props) {
   }
 
   try {
-    const { stdout } = Bun.spawnSync([
+    const { stdout, success } = Bun.spawnSync([
       "chafa",
-      `--size=24x24`,
-      `--format=unicode`,
+      "--size=24x24",
+      "--format=unicode",
       coverUrl,
     ]);
 
-    if (stdout && typeof stdout === "string" || (Buffer.isBuffer(stdout) && stdout.length > 0)) {
+    if (success && stdout && (Buffer.isBuffer(stdout) ? stdout.length > 0 : typeof stdout === "string" && stdout.length > 0)) {
       const asciiArt = Buffer.isBuffer(stdout) ? stdout.toString() : stdout;
 
       return (
-        <Box borderStyle="double" borderColor="redBright">
-          {asciiArt.split("\n").map((line: string, index: number) => (
-            <Text key={index}>{line}</Text>
-          ))}
+        <Box borderStyle="double" borderColor="magenta" paddingX={1}>
+          <Text color="magenta">{asciiArt}</Text>
         </Box>
       );
     }
-  } catch {
-    // chafa failed or is not available
+  } catch (err) {
+    // chafa binary missing, spawn failed, or unsupported platform (e.g., Windows)
+    console.debug("AlbumArt: chafa not available or failed:", err);
   }
 
+  // Fallback placeholder when chafa is unavailable or fails
   return (
-    <Box borderStyle="double" borderColor="redBright">
-      {PLACEHOLDER_SKULL.map((line: string, index: number) => (
-        <Text key={index}>{line}</Text>
-      ))}
+    <Box borderStyle="double" borderColor="yellow">
+      <Text color="yellow" dimColor={true}>
+        [ ALBUM ART UNAVAILABLE ]
+      </Text>
     </Box>
   );
 }
