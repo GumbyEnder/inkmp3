@@ -2,6 +2,7 @@
 import {NavigationProvider} from './stores/navigation.store.tsx';
 import {PluginsProvider} from './stores/plugins.store.tsx';
 import MainLayout from './components/layouts/MainLayout.tsx';
+import CyberpunkLayout from './components/layouts/CyberpunkLayout.tsx';
 import {ThemeProvider} from './contexts/theme.context.tsx';
 import {PlayerProvider} from './stores/player.store.tsx';
 import {FavoritesProvider} from './stores/favorites.store.tsx';
@@ -237,10 +238,10 @@ export default function Main({flags}: {flags?: Flags}) {
 												{flags?.headless ? (
 													<HeadlessLayout flags={flags} />
 												) : (
-													<>
-														<Initializer flags={flags} />
-														<MainLayout />
-													</>
+						<>
+							<Initializer flags={flags} />
+							<CyberpunkLayout />
+					</>
 												)}
 											</Box>
 										</KeyboardBlockProvider>
