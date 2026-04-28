@@ -7,6 +7,7 @@ import {Box, Text} from 'ink';
 import {usePlayer} from '../../hooks/usePlayer.ts';
 import {useTerminalSize} from '../../hooks/useTerminalSize.ts';
 import FFTVisualizer from '../visualizer/FFTVisualizer.tsx';
+import { AlbumArt } from '../common/AlbumArt';
 import TreePlaylist from '../playlist/TreePlaylist.tsx';
 import ProgressBar from '../common/ProgressBar.tsx';
 
@@ -96,6 +97,9 @@ export default function CyberpunkLayout() {
 
   const renderLeftColumn = () => (
     <Box flexDirection="column" borderStyle="single" borderTop={false} borderBottom paddingX={1}>
+      {!isCompact && FFTVisualizer()}
+      {!isCompact && <AlbumArt />}
+
       <Box borderStyle="double" paddingX={1} flexDirection="column" alignItems="center">
         <Text bold color="green">═══ LEGEND ═══</Text>
 
